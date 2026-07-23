@@ -1,12 +1,14 @@
 // Nidus Trading — Prisma schema
-// Local: SQLite. Production: change provider to "postgresql" and set DATABASE_URL.
+// Production (Vercel): PostgreSQL via Neon. Set DATABASE_URL to the pooled connection string.
+// Local: use a Postgres URL (Neon free tier or Docker), OR temporarily set provider = "sqlite"
+// and DATABASE_URL="file:./dev.db" for offline SQLite development.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -69,23 +69,18 @@ See `.env.example`:
 
 ## Production database (PostgreSQL)
 
-1. Create a Postgres database (Vercel Postgres, Supabase, or Neon)
-2. In `prisma/schema.prisma`, change:
+Prisma is configured for **PostgreSQL** (Neon via Vercel Marketplace is preferred on the free tier).
 
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-3. Set `DATABASE_URL` in Vercel env vars
-4. Run:
+1. Create a Postgres database (Neon / Supabase / other)
+2. Set `DATABASE_URL` in Vercel env vars (use the pooled connection string when Neon provides one)
+3. Sync schema + seed:
 
 ```bash
 npx prisma db push
 npm run db:seed
 ```
+
+**Local SQLite fallback:** temporarily set `provider = "sqlite"` in `prisma/schema.prisma` and `DATABASE_URL="file:./dev.db"`. For day-to-day local work, a Neon free connection string also works without changing the schema.
 
 ## Deploy on Vercel
 
