@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="800" y2="600">
+      <stop stop-color="#0B1C2C"/>
+      <stop offset="0.55" stop-color="#1F3B57"/>
+      <stop offset="1" stop-color="#0F8A7A"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g3)"/>
+  <circle cx="620" cy="120" r="90" fill="white" fill-opacity="0.08"/>
+  <circle cx="140" cy="480" r="120" fill="white" fill-opacity="0.06"/>
+  <rect x="220" y="180" width="360" height="240" rx="28" fill="white" fill-opacity="0.12" stroke="white" stroke-opacity="0.25"/>
+  <text x="400" y="310" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="700">NIDUS</text>
+  <text x="400" y="350" text-anchor="middle" fill="white" fill-opacity="0.8" font-family="Arial, sans-serif" font-size="16">Industrial Product 3</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" fill="none">
+  <defs>
+    <linearGradient id="hg" x1="0" y1="0" x2="1600" y2="1000">
+      <stop stop-color="#071018"/>
+      <stop offset="0.5" stop-color="#0F2438"/>
+      <stop offset="1" stop-color="#0B4F48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#hg)"/>
+  <g opacity="0.25" stroke="#7FE7D8" stroke-width="1.5">
+    <path d="M0 720 H1600"/><path d="M0 620 H1600"/><path d="M120 0 V1000"/><path d="M420 0 V1000"/><path d="M820 0 V1000"/><path d="M1220 0 V1000"/>
+  </g>
+  <rect x="180" y="220" width="520" height="360" rx="36" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.2"/>
+  <rect x="780" y="280" width="520" height="300" rx="36" fill="#0F8A7A" fill-opacity="0.25" stroke="#2BBBAD" stroke-opacity="0.4"/>
+  <text x="230" y="390" fill="white" font-family="Georgia, serif" font-size="48">Precision Supply</text>
+  <text x="230" y="450" fill="#9FB4C7" font-family="Arial" font-size="22">Industrial · Electrical · Electronic</text>
+</svg>
