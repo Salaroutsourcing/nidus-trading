@@ -78,7 +78,21 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  slug: product.slug,
+                  sku: product.sku,
+                  stock: product.stock,
+                  images: product.images,
+                  brand: product.brand,
+                  bestSeller: product.bestSeller,
+                  shortDesc: product.shortDesc,
+                  category: product.category,
+                }}
+              />
             ))}
           </div>
         )}
