@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { Manrope, Outfit } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { JsonLd } from "@/components/seo/json-ld";
 import { COMPANY } from "@/lib/constants";
 import "./globals.css";
 
-const sans = DM_Sans({
+const sans = Manrope({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const display = Instrument_Serif({
+const display = Outfit({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["500", "600", "700", "800"],
 });
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -21,7 +21,7 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: {
-    default: `${COMPANY.name} | Premium Industrial & Electronic Solutions Pakistan`,
+    default: `${COMPANY.name} | Industrial & Electronic Marketplace Pakistan`,
     template: `%s | ${COMPANY.name}`,
   },
   description: COMPANY.tagline,
@@ -35,9 +35,10 @@ export const metadata: Metadata = {
     "industrial hardware supplier",
     "safety lifting equipment Pakistan",
     "B2B industrial trading",
+    "quote industrial supplies Pakistan",
   ],
   openGraph: {
-    title: `${COMPANY.name} | Premium Industrial & Electronic Solutions`,
+    title: `${COMPANY.name} | Industrial & Electronic Marketplace`,
     description: COMPANY.tagline,
     url: appUrl,
     siteName: COMPANY.name,

@@ -1,33 +1,40 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Award, Clock3, MessageSquareQuote, ShieldCheck } from "lucide-react";
-import { COMPANY } from "@/lib/constants";
+import { BadgeCheck, Clock3, Factory, Handshake } from "lucide-react";
+import { COMPANY, INDUSTRIES_SERVED } from "@/lib/constants";
 
 const items = [
-  { icon: ShieldCheck, label: "Quality Assured Supply" },
-  { icon: Clock3, label: `${COMPANY.yearsInBusiness}+ Years Trading Experience` },
-  { icon: MessageSquareQuote, label: "Fast Quote Response for B2B & Projects" },
-  { icon: Award, label: "Trusted Industrial Trading Partner" },
+  { icon: BadgeCheck, label: "Quality-assured sourcing" },
+  { icon: Clock3, label: `${COMPANY.yearsInBusiness}+ years reliability` },
+  { icon: Factory, label: "B2B + B2C industrial supply" },
+  { icon: Handshake, label: "Fast quote response" },
 ];
 
 export function TrustBar() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10 md:px-6">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="glass flex items-center gap-3 rounded-2xl border border-[var(--border)] px-4 py-4"
-          >
-            <item.icon className="h-5 w-5 shrink-0 text-[var(--accent)]" />
-            <p className="text-sm font-medium">{item.label}</p>
-          </motion.div>
-        ))}
+    <section className="border-b border-[var(--border)] bg-[var(--surface)]">
+      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {items.map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="flex items-center gap-3"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--accent-soft)] text-[var(--accent)]">
+                <item.icon className="h-5 w-5" />
+              </span>
+              <p className="text-sm font-semibold leading-snug">{item.label}</p>
+            </motion.div>
+          ))}
+        </div>
+        <p className="mt-5 text-center text-xs text-[var(--muted)] md:text-left">
+          Industries served: {INDUSTRIES_SERVED.join(" · ")}
+        </p>
       </div>
     </section>
   );

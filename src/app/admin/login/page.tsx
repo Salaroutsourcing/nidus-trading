@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
+import { getSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,15 @@ import { Input } from "@/components/ui/input";
 export default function AdminLoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    void (async () => {
+      const session = await getSession();
+      if (session?.user?.role === "ADMIN") {
+        router.replace("/admin");
+      }
+    })();
+  }, [router]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,11 +29,19 @@ export default function AdminLoginPage() {
       password: String(form.get("password")),
       redirect: false,
     });
-    setLoading(false);
-    if (res?.error) {
-      toast.error("Invalid credentials");
+    if (res?.error || !res?.ok) {
+      setLoading(false);
+      toast.error("Invalid credentials or insufficient permissions");
       return;
     }
+    const session = await getSession();
+    if (session?.user?.role !== "ADMIN") {
+      await signOut({ redirect: false });
+      setLoading(false);
+      toast.error("This account does not have admin access");
+      return;
+    }
+    setLoading(false);
     toast.success("Admin access granted");
     router.push("/admin");
     router.refresh();
@@ -32,7 +49,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="glass w-full max-w-md rounded-3xl border border-[var(--border)] p-8">
+      <div className="w-full max-w-md rounded-md border border-[var(--border)] bg-[var(--surface)] p-8 shadow-sm">
         <h1 className="display-font text-3xl font-semibold">Admin Portal</h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
           Secure access for Nidus Trading operations.
@@ -42,13 +59,14 @@ export default function AdminLoginPage() {
             name="email"
             type="email"
             placeholder="Admin email"
-            defaultValue="admin@nidustrading.com"
+            autoComplete="username"
             required
           />
           <Input
             name="password"
             type="password"
             placeholder="Password"
+            autoComplete="current-password"
             required
           />
           <Button type="submit" className="w-full" disabled={loading}>

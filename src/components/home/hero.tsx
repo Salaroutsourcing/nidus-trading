@@ -3,70 +3,92 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { COMPANY } from "@/lib/constants";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=2000&q=80";
+import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[88vh] overflow-hidden">
-      <Image
-        src={HERO_IMAGE}
-        alt="Industrial warehouse and supply operations"
-        fill
-        priority
-        className="object-cover"
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#071018]/92 via-[#0b1c2c]/78 to-[#0b1c2c]/45" />
-      <div className="absolute inset-0 mesh-grid opacity-20" />
+    <section className="relative overflow-hidden">
+      <div className="relative min-h-[320px] md:min-h-[380px]">
+        <Image
+          src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1800&q=80"
+          alt="Industrial warehouse supply"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#131921]/95 via-[#131921]/75 to-[#131921]/40" />
+        <div className="relative mx-auto flex max-w-7xl flex-col justify-center px-4 py-14 md:px-6 md:py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-2xl text-white"
+          >
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+              {COMPANY.name}
+            </p>
+            <h1 className="display-font mt-3 text-4xl font-bold leading-tight md:text-5xl">
+              Industrial supply marketplace — quote in minutes
+            </h1>
+            <p className="mt-4 max-w-xl text-base text-white/80 md:text-lg">
+              Electronic, electrical, mild steel, caster wheels, hardware & safety
+              equipment for B2B and B2C buyers across Pakistan.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link href="/products">Shop catalog</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-white/30 bg-white/10 text-white hover:bg-white/20"
+              >
+                <Link href="/inquiry">Request quote</Link>
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
 
-      <div className="relative mx-auto flex min-h-[88vh] max-w-7xl items-end px-4 pb-16 pt-28 md:items-center md:px-6 md:pb-20 md:pt-24">
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, ease: "easeOut" }}
-          className="max-w-2xl text-white"
-        >
-          <p className="display-font text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-            {COMPANY.name}
-          </p>
-          <h1 className="mt-5 max-w-xl text-xl font-medium leading-relaxed text-white/90 sm:text-2xl">
-            Premium Industrial & Electronic Solutions
-          </h1>
-          <p className="mt-4 max-w-lg text-base text-white/70">
-            Quote-driven B2B and B2C supply for electronic components, electrical
-            items, mild steel, caster wheels, and industrial hardware across Pakistan.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="shadow-lg shadow-black/30">
-              <Link href="/products">
-                Browse Catalog <ArrowRight className="h-4 w-4" />
+      {/* Deal / value strip */}
+      <div className="border-b border-[var(--border)] bg-[var(--surface)]">
+        <div className="mx-auto grid max-w-7xl gap-3 px-4 py-3 sm:grid-cols-3 md:px-6">
+          {[
+            {
+              title: "Quote-first pricing",
+              desc: "No public list prices — get terms matched to quantity & specs",
+              href: "/inquiry",
+            },
+            {
+              title: `${COMPANY.yearsInBusiness}+ years trusted supply`,
+              desc: "Reliable sourcing for factories, contractors & workshops",
+              href: "/about",
+            },
+            {
+              title: "Need bulk pricing?",
+              desc: "Send a BOM or multi-SKU list — we respond fast",
+              href: "/inquiry",
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.08 }}
+            >
+              <Link
+                href={item.href}
+                className="block rounded-md border border-[var(--border)] bg-[var(--background)] px-4 py-3 transition hover:border-[var(--accent)]"
+              >
+                <p className="text-sm font-bold text-[var(--foreground)]">{item.title}</p>
+                <p className="mt-0.5 text-xs text-[var(--muted)]">{item.desc}</p>
               </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-            >
-              <Link href="/inquiry">Request a Quote</Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white/10"
-            >
-              <a href={COMPANY.phoneHref}>
-                <Phone className="h-4 w-4" /> {COMPANY.phone}
-              </a>
-            </Button>
-          </div>
-        </motion.div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

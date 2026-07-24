@@ -31,6 +31,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const valid = await bcrypt.compare(parsed.data.password, user.password);
         if (!valid) return null;
 
+        // Admin credentials provider: only ADMIN role may sign in here.
+        // Customer login uses the same NextAuth instance via shop auth pages;
+        // role is checked in JWT callbacks / middleware for /admin routes.
         return {
           id: user.id,
           email: user.email,

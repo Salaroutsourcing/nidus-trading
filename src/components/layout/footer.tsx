@@ -4,17 +4,20 @@ import { COMPANY, NAV_LINKS } from "@/lib/constants";
 
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-[var(--border)]">
+    <footer className="mt-12 border-t border-[var(--border)] bg-[var(--steel)] text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4 md:px-6">
         <div className="md:col-span-1">
-          <p className="display-font text-2xl font-semibold">{COMPANY.name}</p>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+          <p className="display-font text-2xl font-bold">{COMPANY.name}</p>
+          <p className="mt-3 text-sm leading-relaxed text-white/75">
             {COMPANY.tagline}
+          </p>
+          <p className="mt-3 text-xs text-white/60">
+            {COMPANY.yearsInBusiness}+ years · B2B & B2C · Quote-first supply
           </p>
         </div>
 
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+          <p className="text-sm font-bold uppercase tracking-wider text-white/60">
             Explore
           </p>
           <ul className="mt-4 space-y-2 text-sm">
@@ -34,13 +37,18 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+          <p className="text-sm font-bold uppercase tracking-wider text-white/60">
             Business
           </p>
           <ul className="mt-4 space-y-2 text-sm">
             <li>
               <Link href="/inquiry" className="hover:text-[var(--accent)]">
                 Bulk / Custom Inquiry
+              </Link>
+            </li>
+            <li>
+              <Link href="/cart" className="hover:text-[var(--accent)]">
+                Quote List
               </Link>
             </li>
             <li>
@@ -57,7 +65,7 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+          <p className="text-sm font-bold uppercase tracking-wider text-white/60">
             Contact
           </p>
           <ul className="mt-4 space-y-3 text-sm">
@@ -76,7 +84,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-[var(--border)] py-5 text-center text-xs text-[var(--muted)]">
+      <div className="border-t border-white/10 py-5 text-center text-xs text-white/55">
         © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
       </div>
     </footer>

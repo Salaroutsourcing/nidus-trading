@@ -1,58 +1,72 @@
-import { Mail, Phone, MessageCircle } from "lucide-react";
+import { Mail, Phone, MessageCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { COMPANY } from "@/lib/constants";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Contact",
-  description: `Contact ${COMPANY.name} for quotations, orders, and support.`,
+  title: "Contact Industrial Supply Team",
+  description: `Contact ${COMPANY.name} at ${COMPANY.phone} for quotations, bulk pricing, and project support across Pakistan.`,
 };
 
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
-      <h1 className="display-font text-4xl font-semibold">Contact Us</h1>
+      <h1 className="display-font text-4xl font-bold">Contact Us</h1>
       <p className="mt-2 text-[var(--muted)]">
         Reach our team for product availability, quotations, and project support.
+        Quote-first — no online payment required.
       </p>
 
-      <div className="mt-10 grid gap-4 md:grid-cols-3">
+      <div className="mt-10 grid gap-4 md:grid-cols-2">
         <a
           href={COMPANY.phoneHref}
-          className="glass rounded-2xl border border-[var(--border)] p-6 transition hover:-translate-y-1"
+          className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-6 transition hover:border-[var(--accent)]"
         >
           <Phone className="h-5 w-5 text-[var(--accent)]" />
-          <p className="mt-4 font-semibold">Phone</p>
+          <p className="mt-4 font-bold">Phone / Call</p>
           <p className="mt-1 text-sm text-[var(--muted)]">{COMPANY.phone}</p>
-        </a>
-        <a
-          href={`mailto:${COMPANY.email}`}
-          className="glass rounded-2xl border border-[var(--border)] p-6 transition hover:-translate-y-1"
-        >
-          <Mail className="h-5 w-5 text-[var(--accent)]" />
-          <p className="mt-4 font-semibold">Email</p>
-          <p className="mt-1 text-sm text-[var(--muted)]">{COMPANY.email}</p>
         </a>
         <a
           href={COMPANY.whatsapp}
           target="_blank"
           rel="noreferrer"
-          className="glass rounded-2xl border border-[var(--border)] p-6 transition hover:-translate-y-1"
+          className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-6 transition hover:border-[var(--accent)]"
         >
           <MessageCircle className="h-5 w-5 text-[var(--accent)]" />
-          <p className="mt-4 font-semibold">WhatsApp</p>
-          <p className="mt-1 text-sm text-[var(--muted)]">Chat with sales</p>
+          <p className="mt-4 font-bold">WhatsApp</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">Chat with sales for urgent site needs</p>
         </a>
+        <a
+          href={`mailto:${COMPANY.email}`}
+          className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-6 transition hover:border-[var(--accent)]"
+        >
+          <Mail className="h-5 w-5 text-[var(--accent)]" />
+          <p className="mt-4 font-bold">Email</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">{COMPANY.email}</p>
+        </a>
+        <div className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-6">
+          <Clock className="h-5 w-5 text-[var(--accent)]" />
+          <p className="mt-4 font-bold">Response window</p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Most quotes reviewed within one business day. Flag urgency in notes or call.
+          </p>
+        </div>
       </div>
 
-      <div className="glass mt-8 rounded-2xl border border-[var(--border)] p-8">
-        <h2 className="text-xl font-semibold">Prefer a structured request?</h2>
+      <div className="mt-8 rounded-md border border-[var(--border)] bg-[var(--surface)] p-8">
+        <h2 className="text-xl font-bold">Prefer a structured request?</h2>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          Use our inquiry form for bulk quotes and custom requirements.
+          Use our inquiry form for bulk quotes, BOMs, and custom requirements — or
+          build a Quote List from the catalog first.
         </p>
-        <Button asChild className="mt-5">
-          <Link href="/inquiry">Open Inquiry Form</Link>
-        </Button>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Button asChild>
+            <Link href="/inquiry">Open Inquiry Form</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/products">Browse catalog</Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

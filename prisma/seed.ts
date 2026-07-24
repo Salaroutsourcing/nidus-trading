@@ -20,7 +20,7 @@ const categories = [
     name: "Electronic Components",
     slug: "electronic-components",
     description:
-      "Resistors, capacitors, semiconductors, and more electronic components for OEMs, repair shops, and R&D labs across Pakistan.",
+      "Electronic components supplier range for Pakistan OEMs, repair shops, and R&D labs — resistors, capacitors, semiconductors, and labeled assortments. Request a quote for BOM fills and production packs.",
     icon: "Cpu",
     featured: true,
     sortOrder: 1,
@@ -30,7 +30,7 @@ const categories = [
     name: "Electrical Items",
     slug: "electrical-items",
     description:
-      "Wiring, connectors, switches, circuit breakers, and other electrical items for industrial and commercial installations.",
+      "Electrical items for industrial and commercial installations — copper wiring, breakers, connectors, and switchgear accessories. Ideal for contractors and plant maintenance teams seeking quote-based supply.",
     icon: "Zap",
     featured: true,
     sortOrder: 2,
@@ -60,7 +60,7 @@ const categories = [
     name: "MS Products (Mild Steel)",
     slug: "ms-products",
     description:
-      "Mild steel sheets, mild steel plates, mild steel pipes, and other MS products for fabrication and construction.",
+      "Mild steel plates, sheets, and pipes for fabrication and construction across Pakistan. Confirm thickness, grade, and cut sizes — then request project pricing from Nidus Trading.",
     icon: "Layers",
     featured: true,
     sortOrder: 5,
@@ -100,7 +100,7 @@ const categories = [
     name: "Caster Wheels",
     slug: "caster-wheels",
     description:
-      "Heavy duty industrial caster wheels — all types and sizes for carts, racks, and machinery bases.",
+      "Heavy duty industrial caster wheels in multiple sizes and materials for carts, racks, and machinery bases. Compare load ratings via inquiry — we help match swivel, rigid, and locking options.",
     icon: "CircleDot",
     featured: true,
     sortOrder: 9,
@@ -146,7 +146,7 @@ const products: SeedProduct[] = [
     bestSeller: true,
     shortDesc: "Assorted resistors for prototyping, repair, and production BOM fills.",
     description:
-      "Complete metal film resistor assortment for electronics manufacturers, universities, and repair centers. Sourced as part of Nidus Trading’s electronic components supplier range for Pakistan OEMs and labs.",
+      "Complete metal film resistor assortment for electronics manufacturers, universities, and repair centers. Sourced as part of Nidus Trading’s electronic components supplier range for Pakistan OEMs and labs.\n\nEach kit is organized for quick picking on the bench or in stores. Share your preferred ohm ranges, tolerance, and pack size when requesting a quote — we support both prototype replenishment and production BOM fills. Related departments: Electrical Items and IT & Computer Products for complementary parts.",
     tags: ["electronic components supplier", "resistors Pakistan", "metal film resistor"],
     specifications: {
       Type: "Metal film",
@@ -737,6 +737,27 @@ Browse [MS Products](/products?category=ms-products) including mild steel sheets
     metaDesc:
       "What to confirm when buying mild steel plates in Pakistan — thickness, grade, volume and logistics from Nidus Trading.",
     coverImage: u("photo-1565193566173-7a0ee3dbe261", 1400),
+  },
+  {
+    title: "Industrial Caster Wheels Pakistan: Load Rating & Material Guide",
+    slug: "industrial-caster-wheels-pakistan-guide",
+    excerpt:
+      "How to choose heavy duty caster wheels by load rating, wheel material, and swivel vs rigid configuration for carts and racks.",
+    content: `Selecting the right industrial caster wheels prevents premature failure on warehouse carts, assembly trolleys, and machinery bases.
+
+## What to confirm before you buy
+1. Load rating per caster (and total cart load)
+2. Wheel material — polyurethane, rubber, nylon, or cast iron
+3. Swivel vs rigid vs locking brake
+4. Mounting plate size and bolt pattern
+5. Floor type (epoxy, concrete, outdoor)
+
+Nidus Trading supplies heavy duty caster wheels across common sizes used in Pakistan factories and logistics sites. Browse [Caster Wheels](/products?category=caster-wheels), compare options via [inquiry](/inquiry), or add SKUs to your [quote list](/cart). For related hardware and safety gear, see [Hardware Items](/products?category=hardware-items) and [Safety & Lifting Equipment](/products?category=safety-lifting-equipment).`,
+    tags: ["industrial caster wheels Pakistan", "heavy duty casters", "warehouse wheels"],
+    metaTitle: "Industrial Caster Wheels Pakistan | Buying Guide | Nidus Trading",
+    metaDesc:
+      "Load rating, material, and mounting tips for industrial caster wheels in Pakistan. Request a quote from Nidus Trading.",
+    coverImage: u("photo-1586528116311-ad8dd3c8310d", 1400),
   },
 ];
 

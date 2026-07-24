@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { adminFetch } from "@/lib/admin-fetch";
+import { parseJsonArray } from "@/lib/utils";
 
 type Post = {
   id: string;
@@ -13,34 +15,45 @@ type Post = {
   excerpt: string;
   content: string;
   tags: string;
+  coverImage?: string | null;
   published: boolean;
   metaTitle?: string | null;
   metaDesc?: string | null;
 };
 
+const empty = {
+  title: "",
+  excerpt: "",
+  content: "",
+  tags: "",
+  coverImage: "",
+  metaTitle: "",
+  metaDesc: "",
+  published: true,
+};
+
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [form, setForm] = useState({
-    title: "",
-    excerpt: "",
-    content: "",
-    tags: "",
-    metaTitle: "",
-    metaDesc: "",
-    published: true,
-  });
+  const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   async function load() {
-    const data = await fetch("/api/blog").then((r) => r.json());
-    setPosts(data);
+    setLoading(true);
+    try {
+      const data = await adminFetch<Post[]>("/api/blog");
+      setPosts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to load");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     void load();
   }, []);
 
-  // Meta description generator hint for editors
   function suggestMeta() {
     const keyword = form.tags.split(",")[0]?.trim() || "industrial supplies";
     const base = form.excerpt || form.title;
@@ -58,28 +71,21 @@ export default function AdminBlogPage() {
     const payload = {
       ...form,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+      coverImage: form.coverImage || null,
     };
-    const res = await fetch(editingId ? `/api/blog/${editingId}` : "/api/blog", {
-      method: editingId ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      toast.error("Save failed");
-      return;
+    try {
+      await adminFetch(editingId ? `/api/blog/${editingId}` : "/api/blog", {
+        method: editingId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      toast.success(editingId ? "Post updated" : "Post created");
+      setForm(empty);
+      setEditingId(null);
+      void load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Save failed");
     }
-    toast.success(editingId ? "Post updated" : "Post created");
-    setForm({
-      title: "",
-      excerpt: "",
-      content: "",
-      tags: "",
-      metaTitle: "",
-      metaDesc: "",
-      published: true,
-    });
-    setEditingId(null);
-    void load();
   }
 
   return (
@@ -93,7 +99,7 @@ export default function AdminBlogPage() {
 
       <form
         onSubmit={onSubmit}
-        className="glass space-y-3 rounded-2xl border border-[var(--border)] p-5"
+        className="space-y-3 rounded-md border border-[var(--border)] bg-[var(--surface)] p-5"
       >
         <Input
           placeholder="Title"
@@ -112,6 +118,11 @@ export default function AdminBlogPage() {
           value={form.content}
           onChange={(e) => setForm({ ...form, content: e.target.value })}
           required
+        />
+        <Input
+          placeholder="Cover image URL"
+          value={form.coverImage}
+          onChange={(e) => setForm({ ...form, coverImage: e.target.value })}
         />
         <Input
           placeholder="Tags (comma separated keywords)"
@@ -141,54 +152,83 @@ export default function AdminBlogPage() {
             Suggest SEO meta
           </Button>
           <Button type="submit">{editingId ? "Update post" : "Create post"}</Button>
+          {editingId && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setEditingId(null);
+                setForm(empty);
+              }}
+            >
+              Cancel
+            </Button>
+          )}
         </div>
       </form>
 
       <div className="space-y-3">
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            className="glass flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] p-4"
-          >
-            <div>
-              <p className="font-semibold">{post.title}</p>
-              <Badge tone={post.published ? "success" : "warning"}>
-                {post.published ? "Published" : "Draft"}
-              </Badge>
+        {loading ? (
+          <p className="text-sm text-[var(--muted)]">Loading…</p>
+        ) : posts.length === 0 ? (
+          <p className="rounded-md border border-[var(--border)] p-6 text-center text-sm text-[var(--muted)]">
+            No blog posts yet.
+          </p>
+        ) : (
+          posts.map((post) => (
+            <div
+              key={post.id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4"
+            >
+              <div>
+                <p className="font-semibold">{post.title}</p>
+                <Badge tone={post.published ? "success" : "warning"}>
+                  {post.published ? "Published" : "Draft"}
+                </Badge>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingId(post.id);
+                    setForm({
+                      title: post.title,
+                      excerpt: post.excerpt,
+                      content: post.content,
+                      tags: parseJsonArray(post.tags).join(", "),
+                      coverImage: post.coverImage || "",
+                      metaTitle: post.metaTitle || "",
+                      metaDesc: post.metaDesc || "",
+                      published: post.published,
+                    });
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={async () => {
+                    try {
+                      await adminFetch(`/api/blog/${post.id}`, {
+                        method: "DELETE",
+                      });
+                      toast.success("Deleted");
+                      void load();
+                    } catch (err) {
+                      toast.error(
+                        err instanceof Error ? err.message : "Delete failed"
+                      );
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setEditingId(post.id);
-                  setForm({
-                    title: post.title,
-                    excerpt: post.excerpt,
-                    content: post.content,
-                    tags: JSON.parse(post.tags || "[]").join(", "),
-                    metaTitle: post.metaTitle || "",
-                    metaDesc: post.metaDesc || "",
-                    published: post.published,
-                  });
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={async () => {
-                  await fetch(`/api/blog/${post.id}`, { method: "DELETE" });
-                  toast.success("Deleted");
-                  void load();
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
