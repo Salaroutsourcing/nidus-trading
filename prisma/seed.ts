@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { extendedProducts, type ExtendedProduct } from "./catalog-extended";
 import {
-  buildImages,
+  resolveGallery,
   baseImageQuery,
   extendedImageQuery,
   categoryImageQuery,
@@ -852,10 +852,10 @@ async function main() {
     const categoryId = categoryMap.get(p.categorySlug);
     if (!categoryId) continue;
     const slug = slugFromName(p.name);
-    // Keyword-matched gallery (3 relevant, unique images per product)
+    // Exact local photo when available, else keyword-matched gallery
     const query =
       baseImageQuery[p.name] || categoryImageQuery[p.categorySlug] || "industrial";
-    const images = buildImages(query, slug, 3);
+    const images = resolveGallery(slug, query);
     await prisma.product.create({
       data: {
         name: p.name,
@@ -884,10 +884,10 @@ async function main() {
     const specifications = Object.fromEntries(
       p.specs.map((s) => [s.name, s.value])
     );
-    // Keyword-matched gallery (3 relevant, unique images per product)
+    // Exact local photo when available, else keyword-matched gallery
     const query =
       extendedImageQuery[p.slug] || categoryImageQuery[p.categorySlug] || "industrial";
-    const images = buildImages(query, p.slug, 3);
+    const images = resolveGallery(p.slug, query);
     await prisma.product.create({
       data: {
         name: p.title,

@@ -14,6 +14,9 @@
  * Tags are comma-separated Flickr keywords chosen per product type.
  */
 
+import fs from "node:fs";
+import path from "node:path";
+
 function hashSeed(seed: string): number {
   let h = 2166136261;
   for (let i = 0; i < seed.length; i++) {
@@ -35,6 +38,34 @@ export function buildImages(query: string, seed: string, n = 3): string[] {
     { length: n },
     (_, i) => `https://loremflickr.com/1200/900/${tags}?lock=${base + i * 7 + 1}`
   );
+}
+
+/**
+ * Resolve a product's gallery, preferring EXACT local images when present.
+ *
+ * Exact AI-generated product photos live at:
+ *   public/images/products/<slug>-1.jpg  (main / card image)
+ *   public/images/products/<slug>-2.jpg  (optional)
+ *   public/images/products/<slug>-3.jpg  (optional)
+ *
+ * Any missing slots are filled with keyword-matched images so every product
+ * always has a 3-image gallery. This lets exact photos be added in batches
+ * without breaking the catalog.
+ */
+export function resolveGallery(slug: string, query: string): string[] {
+  const productsDir = path.join(process.cwd(), "public", "images", "products");
+  const local: string[] = [];
+  for (let i = 1; i <= 3; i++) {
+    const file = path.join(productsDir, `${slug}-${i}.jpg`);
+    try {
+      if (fs.existsSync(file)) local.push(`/images/products/${slug}-${i}.jpg`);
+    } catch {
+      // ignore fs errors (e.g. serverless build without public dir)
+    }
+  }
+  if (local.length >= 3) return local.slice(0, 3);
+  const fill = buildImages(query, slug, 3 - local.length);
+  return [...local, ...fill];
 }
 
 /** Fallback keywords by category slug. */
