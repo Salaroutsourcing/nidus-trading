@@ -6,9 +6,16 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Products",
+  title: "Industrial & Electronic Product Catalog Pakistan",
   description:
-    "Browse industrial, electrical, electronic, mechanical and hardware products from Nidus Trading.",
+    "Browse electronic components, electrical items, mild steel plates, industrial caster wheels, hardware and safety equipment from Nidus Trading. Request a quote.",
+  keywords: [
+    "industrial caster wheels Pakistan",
+    "electronic components supplier",
+    "mild steel plates Pakistan",
+    "electrical items supplier",
+    "hardware supplier Pakistan",
+  ],
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -19,8 +26,6 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
   const category = typeof sp.category === "string" ? sp.category : undefined;
   const brand = typeof sp.brand === "string" ? sp.brand : undefined;
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
-  const minPrice = Number(typeof sp.minPrice === "string" ? sp.minPrice : 0);
-  const maxPrice = Number(typeof sp.maxPrice === "string" ? sp.maxPrice : 0);
 
   const where: Record<string, unknown> = { active: true };
   if (q) {
@@ -33,27 +38,17 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
   }
   if (category) where.category = { slug: category };
   if (brand) where.brand = brand;
-  if (minPrice || maxPrice) {
-    where.price = {
-      ...(minPrice ? { gte: minPrice } : {}),
-      ...(maxPrice ? { lte: maxPrice } : {}),
-    };
-  }
-
-  const orderBy =
-    sort === "price-asc"
-      ? { price: "asc" as const }
-      : sort === "price-desc"
-        ? { price: "desc" as const }
-        : sort === "name"
-          ? { name: "asc" as const }
-          : { createdAt: "desc" as const };
 
   const [products, categories, brands] = await Promise.all([
     prisma.product.findMany({
       where,
       include: { category: true },
-      orderBy,
+      orderBy:
+        sort === "name"
+          ? { name: "asc" }
+          : sort === "featured"
+            ? [{ featured: "desc" }, { bestSeller: "desc" }, { createdAt: "desc" }]
+            : { createdAt: "desc" },
     }),
     prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.product.findMany({
@@ -71,7 +66,7 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
       />
       <div>
         <p className="mb-4 text-sm text-[var(--muted)]">
-          {products.length} product{products.length === 1 ? "" : "s"} found
+          {products.length} product{products.length === 1 ? "" : "s"} found · quote on request
         </p>
         {products.length === 0 ? (
           <div className="glass rounded-2xl border border-[var(--border)] p-10 text-center">
@@ -101,8 +96,9 @@ export default function ProductsPage({
     <div className="mx-auto max-w-7xl px-4 py-10 md:px-6">
       <div className="mb-8">
         <h1 className="display-font text-4xl font-semibold">Product Catalog</h1>
-        <p className="mt-2 text-[var(--muted)]">
-          Filter by category, brand, and price. Request a quote for bulk orders.
+        <p className="mt-2 max-w-2xl text-[var(--muted)]">
+          Filter by category and brand. Add items to your quote list or request a
+          quotation for electronic components, mild steel, caster wheels, and more.
         </p>
       </div>
       <Suspense

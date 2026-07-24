@@ -1,8 +1,8 @@
 import { COMPANY } from "@/lib/constants";
 
 export const metadata = {
-  title: "About Us",
-  description: `Learn about ${COMPANY.name} — premium industrial and electronic solutions.`,
+  title: "About Us | Industrial Trading Pakistan",
+  description: `Learn about ${COMPANY.name} — premium industrial and electronic solutions with quote-driven B2B and B2C supply across Pakistan.`,
 };
 
 export default function AboutPage() {
@@ -18,13 +18,12 @@ export default function AboutPage() {
           {COMPANY.name} is a B2B and B2C trading company specializing in
           industrial, electrical, electronic, mechanical, IT, and hardware
           supplies. We help manufacturers, contractors, workshops, and
-          procurement teams source reliable products with competitive pricing.
+          procurement teams source reliable products through a quote-first process.
         </p>
         <p>
-          Our catalog spans electronic components, electrical distribution
-          materials, automation systems, renewable energy products, power backup
-          solutions, MS products, caster wheels, safety & lifting equipment, and
-          precision tools.
+          Our catalog spans electronic components, electrical items, IT & computer
+          products, mechanical items, mild steel (MS) products, wooden items, paint
+          items, hardware, industrial caster wheels, and safety & lifting equipment.
         </p>
         <p>
           With a focus on quality assurance, responsive quotations, and dependable
@@ -36,7 +35,7 @@ export default function AboutPage() {
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[
           { label: "Years of experience", value: `${COMPANY.yearsInBusiness}+` },
-          { label: "Product categories", value: "14" },
+          { label: "Product categories", value: "10" },
           { label: "Support", value: COMPANY.phone },
         ].map((stat) => (
           <div

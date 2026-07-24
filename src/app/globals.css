@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #eef3f7;
-  --foreground: #0b1c2c;
-  --muted: #5b6b7c;
-  --card: rgba(255, 255, 255, 0.55);
-  --border: rgba(15, 40, 60, 0.12);
-  --accent: #0f8a7a;
-  --accent-hover: #0c7366;
-  --accent-soft: rgba(15, 138, 122, 0.14);
-  --navy: #0b1c2c;
-  --steel: #1f3b57;
-  --glow: rgba(15, 138, 122, 0.25);
-  --hero-grad: radial-gradient(1200px 600px at 10% -10%, rgba(15, 138, 122, 0.22), transparent 55%),
-    radial-gradient(900px 500px at 90% 10%, rgba(31, 59, 87, 0.2), transparent 50%),
-    linear-gradient(160deg, #e8f0f6 0%, #f4f7fa 40%, #e7eef5 100%);
+  --background: #e6edf4;
+  --foreground: #0a1624;
+  --muted: #526578;
+  --card: rgba(255, 255, 255, 0.62);
+  --border: rgba(10, 28, 48, 0.14);
+  --accent: #0d7a6e;
+  --accent-hover: #0a6359;
+  --accent-soft: rgba(13, 122, 110, 0.14);
+  --navy: #0a1624;
+  --steel: #1a334d;
+  --glow: rgba(13, 122, 110, 0.22);
+  --hero-grad: radial-gradient(1200px 600px at 10% -10%, rgba(13, 122, 110, 0.2), transparent 55%),
+    radial-gradient(900px 500px at 90% 10%, rgba(26, 51, 77, 0.22), transparent 50%),
+    linear-gradient(160deg, #dfe8f1 0%, #eef3f8 40%, #e2eaf2 100%);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 }
@@ -72,11 +72,11 @@ body::before {
 
 .glass {
   background: var(--card);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(155%);
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
   box-shadow:
-    0 10px 40px rgba(8, 20, 35, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 8px 32px rgba(8, 20, 35, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.4) inset;
 }
 
 .dark .glass {

@@ -3,118 +3,118 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+/**
+ * Catalog seed for Nidus Trading (inquiry/quote-driven).
+ * Prices are kept in DB for admin/internal use but are NOT shown on the public site.
+ *
+ * Reset & re-seed (Neon / production):
+ *   DATABASE_URL="..." npx prisma db seed
+ * Or: npm run db:seed
+ */
+
+const u = (id: string, w = 1200) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
 const categories = [
   {
     name: "Electronic Components",
     slug: "electronic-components",
-    description: "Resistors, capacitors, semiconductors, ICs, sensors and more.",
+    description:
+      "Resistors, capacitors, semiconductors, and more electronic components for OEMs, repair shops, and R&D labs across Pakistan.",
     icon: "Cpu",
     featured: true,
     sortOrder: 1,
+    image: u("photo-1518770660439-4636190af475"),
   },
   {
     name: "Electrical Items",
     slug: "electrical-items",
-    description: "Wiring, connectors, switches, circuit breakers and cables.",
+    description:
+      "Wiring, connectors, switches, circuit breakers, and other electrical items for industrial and commercial installations.",
     icon: "Zap",
     featured: true,
     sortOrder: 2,
+    image: u("photo-1621905251189-08b45d6a269e"),
   },
   {
     name: "IT & Computer Products",
     slug: "it-computer-products",
-    description: "Servers, hardware, accessories, software licenses and networking.",
+    description:
+      "Servers, software, hardware, and accessories for offices, data rooms, and industrial IT infrastructure.",
     icon: "Monitor",
     featured: true,
     sortOrder: 3,
+    image: u("photo-1558494949-ef010cbdcc31"),
   },
   {
     name: "Mechanical Items",
     slug: "mechanical-items",
-    description: "Tools, bearings, gears, fasteners and welding products.",
+    description:
+      "Tools, bearings, welding products, gears, fasteners, and other mechanical items for workshops and factories.",
     icon: "Cog",
     featured: true,
     sortOrder: 4,
+    image: u("photo-1504917595217-d4dc5ebe6122"),
   },
   {
-    name: "MS Products",
+    name: "MS Products (Mild Steel)",
     slug: "ms-products",
-    description: "Mild steel sheets, plates, pipes, angles and channels.",
+    description:
+      "Mild steel sheets, mild steel plates, mild steel pipes, and other MS products for fabrication and construction.",
     icon: "Layers",
     featured: true,
     sortOrder: 5,
+    image: u("photo-1504328345606-18bbc8c9d7d1"),
   },
   {
     name: "Wooden Items",
     slug: "wooden-items",
-    description: "Furniture, fixtures and custom wooden products.",
+    description:
+      "Furniture, fixtures, and custom wooden products for commercial, industrial, and project fit-outs.",
     icon: "TreePine",
-    featured: false,
+    featured: true,
     sortOrder: 6,
+    image: u("photo-1616486338812-3dadae4b4ace"),
   },
   {
     name: "Paint Items",
     slug: "paint-items",
-    description: "Auto paint, industrial paint and building pre-paint products.",
+    description:
+      "Auto paint, industrial paint, building paints, and pre-paint items for workshops, plants, and contractors.",
     icon: "Paintbrush",
-    featured: false,
+    featured: true,
     sortOrder: 7,
+    image: u("photo-1589939705384-5185137a7f0f"),
   },
   {
     name: "Hardware Items",
     slug: "hardware-items",
-    description: "Complete range of industrial and commercial hardware.",
+    description:
+      "All types of hardware items for industrial maintenance, fabrication, and commercial projects in Pakistan.",
     icon: "Wrench",
     featured: true,
     sortOrder: 8,
+    image: u("photo-1530124566582-a618bc2615dc"),
   },
   {
     name: "Caster Wheels",
     slug: "caster-wheels",
-    description: "Heavy duty industrial caster wheels – all types and sizes.",
+    description:
+      "Heavy duty industrial caster wheels — all types and sizes for carts, racks, and machinery bases.",
     icon: "CircleDot",
     featured: true,
     sortOrder: 9,
+    image: u("photo-1586528116311-ad8dd3c8310d"),
   },
   {
     name: "Safety & Lifting Equipment",
     slug: "safety-lifting-equipment",
-    description: "Steel wire ropes, rigging hardware and safety gear.",
+    description:
+      "Steel wire ropes, rigging hardware, and all types of safety items for lifting and industrial sites.",
     icon: "Shield",
     featured: true,
     sortOrder: 10,
-  },
-  {
-    name: "Automation & Control Systems",
-    slug: "automation-control-systems",
-    description: "PLC, relays, VFDs and robotics components.",
-    icon: "Bot",
-    featured: true,
-    sortOrder: 11,
-  },
-  {
-    name: "Renewable Energy Products",
-    slug: "renewable-energy-products",
-    description: "Solar panels, inverters, batteries and charge controllers.",
-    icon: "Sun",
-    featured: true,
-    sortOrder: 12,
-  },
-  {
-    name: "Power Backup Solutions",
-    slug: "power-backup-solutions",
-    description: "UPS, generators and voltage stabilizers.",
-    icon: "BatteryCharging",
-    featured: true,
-    sortOrder: 13,
-  },
-  {
-    name: "Tools & Measuring Instruments",
-    slug: "tools-measuring-instruments",
-    description: "Power tools, hand tools and precision instruments.",
-    icon: "Ruler",
-    featured: true,
-    sortOrder: 14,
+    image: u("photo-1504307651254-35680f356dfd"),
   },
 ];
 
@@ -131,267 +131,546 @@ type SeedProduct = {
   description: string;
   tags: string[];
   specifications: Record<string, string>;
+  image: string;
 };
 
 const products: SeedProduct[] = [
+  // Electronic Components
   {
-    name: "Heavy Duty Industrial Caster Wheel 6 inch",
-    categorySlug: "caster-wheels",
-    price: 4500,
-    discountPrice: 3990,
-    stock: 120,
-    brand: "NidusPro",
-    featured: true,
-    bestSeller: true,
-    shortDesc: "Swivel caster with brake for industrial carts and machinery.",
-    description:
-      "Premium heavy duty industrial caster wheel engineered for warehouses, factories and logistics. Suitable for continuous load applications across Pakistan industries.",
-    tags: ["industrial caster wheels Pakistan", "heavy duty caster", "warehouse wheels"],
-    specifications: {
-      Diameter: "6 inch",
-      "Load Capacity": "350 kg",
-      Material: "Polyurethane on cast iron",
-      Mount: "Top plate with brake",
-    },
-  },
-  {
-    name: "Mild Steel Plate 6mm",
-    categorySlug: "ms-products",
-    price: 18500,
-    stock: 40,
-    brand: "SteelForge",
-    featured: true,
-    bestSeller: true,
-    shortDesc: "Structural MS plate suitable for fabrication and construction.",
-    description:
-      "High-quality mild steel plates for fabrication shops, construction and industrial frameworks. Competitive mild steel plates price with reliable thickness tolerance.",
-    tags: ["mild steel plates price", "MS plate", "fabrication steel"],
-    specifications: {
-      Thickness: "6 mm",
-      Grade: "A36 equivalent",
-      Finish: "Hot rolled",
-      Size: "4x8 ft typical",
-    },
-  },
-  {
-    name: "Arduino Compatible Sensor Kit",
+    name: "Precision Metal Film Resistor Kit",
     categorySlug: "electronic-components",
-    price: 6500,
-    discountPrice: 5790,
-    stock: 85,
+    price: 1,
+    stock: 200,
     brand: "ElectroLab",
     featured: true,
     bestSeller: true,
-    shortDesc: "37-in-1 sensor pack for prototyping and education.",
+    shortDesc: "Assorted resistors for prototyping, repair, and production BOM fills.",
     description:
-      "Complete electronic components sensor kit for makers, universities and R&D labs. Ideal starter pack from a trusted electronic components supplier.",
-    tags: ["electronic components supplier", "sensor kit", "Arduino"],
+      "Complete metal film resistor assortment for electronics manufacturers, universities, and repair centers. Sourced as part of Nidus Trading’s electronic components supplier range for Pakistan OEMs and labs.",
+    tags: ["electronic components supplier", "resistors Pakistan", "metal film resistor"],
     specifications: {
-      Pieces: "37 modules",
-      Compatibility: "Arduino / ESP",
-      Includes: "Ultrasonic, DHT, IR, relay",
+      Type: "Metal film",
+      Tolerance: "1%",
+      Range: "10Ω – 1MΩ",
+      Pack: "Assorted kit",
     },
+    image: u("photo-1555617981-dac3880eac6e"),
+  },
+  {
+    name: "Electrolytic Capacitor Assortment",
+    categorySlug: "electronic-components",
+    price: 1,
+    stock: 180,
+    brand: "ElectroLab",
+    featured: true,
+    shortDesc: "Radial electrolytic capacitors for power supplies and control boards.",
+    description:
+      "Reliable electrolytic capacitor packs for SMPS, industrial controllers, and maintenance teams. Request a quote for bulk electronic components supply.",
+    tags: ["capacitors", "electronic components", "power supply parts"],
+    specifications: {
+      Type: "Electrolytic",
+      Voltage: "16V–50V mix",
+      Mount: "Through-hole",
+      Use: "Power & filtering",
+    },
+    image: u("photo-1597872200969-2b65d56bd16b"),
+  },
+  {
+    name: "Semiconductor Diode & Transistor Pack",
+    categorySlug: "electronic-components",
+    price: 1,
+    stock: 150,
+    brand: "SemiCore",
+    bestSeller: true,
+    shortDesc: "Common diodes and transistors for industrial electronics repair.",
+    description:
+      "Semiconductor assortment covering rectifier diodes, switching transistors, and related parts for industrial electronics service and light manufacturing.",
+    tags: ["semiconductors", "diodes", "transistors Pakistan"],
+    specifications: {
+      Includes: "1N400x, 2N2222 equivalents",
+      Application: "Repair & OEM",
+      Packaging: "Labeled bins",
+    },
+    image: u("photo-1518770660439-4636190af475", 1000),
+  },
+  // Electrical Items
+  {
+    name: "Industrial Copper Wiring Cable",
+    categorySlug: "electrical-items",
+    price: 1,
+    stock: 90,
+    brand: "PowerSafe",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "Multi-core copper wiring for panels, machines, and building distribution.",
+    description:
+      "Industrial-grade copper wiring cable for electrical contractors and plant maintenance. Part of Nidus Trading’s electrical items catalog serving Pakistan industry.",
+    tags: ["electrical wiring Pakistan", "copper cable", "industrial electrical"],
+    specifications: {
+      Conductor: "Copper",
+      Insulation: "PVC",
+      Application: "Power & control",
+      Supply: "Per meter / drum",
+    },
+    image: u("photo-1558618666-fcd25c85cd64"),
+  },
+  {
+    name: "Industrial Connector Set",
+    categorySlug: "electrical-items",
+    price: 1,
+    stock: 220,
+    brand: "PowerSafe",
+    shortDesc: "Heavy-duty connectors for control cabinets and machine wiring.",
+    description:
+      "Rugged electrical connectors for industrial panels, conveyors, and OEM machine builders. Quote-based supply for project quantities.",
+    tags: ["electrical connectors", "panel connectors", "industrial plugs"],
+    specifications: {
+      Type: "Industrial multipole",
+      Rating: "Project dependent",
+      Mount: "Panel / inline",
+    },
+    image: u("photo-1473968512647-3e447244af8f"),
   },
   {
     name: "MCB Circuit Breaker 32A 2P",
     categorySlug: "electrical-items",
-    price: 1850,
+    price: 1,
     stock: 200,
     brand: "PowerSafe",
     featured: true,
     bestSeller: true,
     shortDesc: "DIN-rail miniature circuit breaker for distribution boards.",
     description:
-      "Reliable 32A double-pole MCB for residential and commercial electrical panels with high breaking capacity.",
-    tags: ["circuit breaker", "MCB", "electrical"],
+      "Reliable 32A double-pole MCB for residential, commercial, and light industrial electrical panels with high breaking capacity. Switches and circuit breakers available on quote.",
+    tags: ["circuit breakers Pakistan", "MCB", "electrical switches"],
     specifications: {
       Current: "32A",
       Poles: "2P",
       Curve: "C",
       Mount: "DIN rail",
     },
+    image: u("photo-1621905252507-b35492cc74b4"),
   },
+  // IT & Computer Products
   {
-    name: "Cat6 Networking Cable 305m Box",
+    name: "Rack Server Hardware Bundle",
     categorySlug: "it-computer-products",
-    price: 22000,
-    discountPrice: 19900,
-    stock: 30,
+    price: 1,
+    stock: 15,
     brand: "NetLink",
     featured: true,
-    shortDesc: "Pure copper Cat6 LAN cable for structured cabling.",
+    bestSeller: true,
+    shortDesc: "Server and rack accessories for data rooms and industrial IT.",
     description:
-      "High-performance Cat6 networking cable for offices, data rooms and industrial networks.",
-    tags: ["networking", "Cat6", "LAN cable"],
+      "IT & computer products including server hardware and rack accessories for offices, clinics, and industrial control rooms. Request a quotation for your configuration.",
+    tags: ["servers Pakistan", "IT hardware supplier", "rack server"],
     specifications: {
-      Length: "305 m",
-      Category: "Cat6",
-      Conductor: "Pure copper",
-      Jacket: "PVC",
+      Category: "Servers & hardware",
+      Form: "Rack-mount ready",
+      Support: "Quote-based config",
     },
+    image: u("photo-1597872200969-2b65d56bd16b", 1100),
   },
+  {
+    name: "Enterprise Networking Switch",
+    categorySlug: "it-computer-products",
+    price: 1,
+    stock: 40,
+    brand: "NetLink",
+    featured: true,
+    shortDesc: "Managed switching hardware for structured office and plant networks.",
+    description:
+      "Network hardware for structured cabling projects — switches, accessories, and related IT products supplied to businesses across Pakistan.",
+    tags: ["networking hardware", "network switch", "IT products Pakistan"],
+    specifications: {
+      Ports: "Gigabit class",
+      Management: "Managed / smart",
+      Use: "Office & industrial LAN",
+    },
+    image: u("photo-1544197150-b99a5804efb6"),
+  },
+  {
+    name: "IT Accessories & Peripherals Pack",
+    categorySlug: "it-computer-products",
+    price: 1,
+    stock: 80,
+    brand: "NetLink",
+    shortDesc: "Keyboards, cables, adapters and workstation accessories.",
+    description:
+      "Software licensing guidance plus hardware accessories for workstations and server rooms. Contact Nidus Trading for a tailored IT supply quote.",
+    tags: ["computer accessories", "IT peripherals", "software hardware"],
+    specifications: {
+      Includes: "Cables, adapters, peripherals",
+      Audience: "Offices & plants",
+      Supply: "Mixed SKUs",
+    },
+    image: u("photo-1517694712202-14dd9538aa97"),
+  },
+  // Mechanical Items
   {
     name: "Deep Groove Ball Bearing 6205",
     categorySlug: "mechanical-items",
-    price: 950,
+    price: 1,
     stock: 500,
     brand: "MechaRoll",
+    featured: true,
     bestSeller: true,
-    shortDesc: "Precision bearing for motors and machinery.",
+    shortDesc: "Precision bearing for motors, conveyors, and machinery.",
     description:
-      "Standard 6205 deep groove ball bearing for industrial motors, conveyors and mechanical assemblies.",
-    tags: ["bearing", "mechanical", "6205"],
+      "Standard 6205 deep groove ball bearing for industrial motors, conveyors, and mechanical assemblies. Part of our mechanical items range including tools, bearings, and fasteners.",
+    tags: ["industrial bearings Pakistan", "6205 bearing", "mechanical parts"],
     specifications: {
       Model: "6205",
       "Inner Dia": "25 mm",
       "Outer Dia": "52 mm",
       Width: "15 mm",
     },
+    image: u("photo-1581092918056-0c4c3acd3789"),
   },
   {
-    name: "PLC Relay Module 8 Channel 24V",
-    categorySlug: "automation-control-systems",
-    price: 7800,
+    name: "Industrial Welding Consumables Kit",
+    categorySlug: "mechanical-items",
+    price: 1,
+    stock: 70,
+    brand: "WeldPro",
+    featured: true,
+    shortDesc: "Welding electrodes and accessories for fabrication shops.",
+    description:
+      "Welding products for mild steel fabrication and repair. Request quotes for project packs covering electrodes, tips, and related mechanical consumables.",
+    tags: ["welding products Pakistan", "fabrication", "welding electrodes"],
+    specifications: {
+      Type: "SMAW consumables",
+      Use: "MS fabrication",
+      Supply: "Kit / bulk",
+    },
+    image: u("photo-1504328345606-18bbc8c9d7d1", 1000),
+  },
+  {
+    name: "Industrial Gear & Fastener Assortment",
+    categorySlug: "mechanical-items",
+    price: 1,
+    stock: 120,
+    brand: "MechaRoll",
+    bestSeller: true,
+    shortDesc: "Gears, fasteners and workshop mechanical hardware.",
+    description:
+      "Gears, fasteners, and related mechanical items for maintenance teams and OEMs. Tools and measuring support available through Nidus Trading.",
+    tags: ["gears", "fasteners", "mechanical tools Pakistan"],
+    specifications: {
+      Includes: "Gears & fasteners mix",
+      Grade: "Industrial",
+      Finish: "As specified",
+    },
+    image: u("photo-1530124566582-a618bc2615dc", 1000),
+  },
+  // MS Products
+  {
+    name: "Mild Steel Plate 6mm",
+    categorySlug: "ms-products",
+    price: 1,
+    stock: 40,
+    brand: "SteelForge",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "Structural mild steel plates for fabrication and construction.",
+    description:
+      "High-quality mild steel plates for fabrication shops, construction, and industrial frameworks across Pakistan. Request current availability and quote for thickness and cut size.",
+    tags: ["mild steel plates Pakistan", "MS plate", "fabrication steel"],
+    specifications: {
+      Thickness: "6 mm",
+      Grade: "A36 equivalent",
+      Finish: "Hot rolled",
+      Size: "4x8 ft typical",
+    },
+    image: u("photo-1565193566173-7a0ee3dbe261"),
+  },
+  {
+    name: "Mild Steel Sheet Pack",
+    categorySlug: "ms-products",
+    price: 1,
+    stock: 55,
+    brand: "SteelForge",
+    featured: true,
+    shortDesc: "MS sheets for ducting, enclosures, and light fabrication.",
+    description:
+      "Mild steel sheets supplied for HVAC, enclosures, and light structural work. Quote-driven MS products supply with nationwide inquiry support.",
+    tags: ["mild steel sheets", "MS sheet Pakistan", "steel supplier"],
+    specifications: {
+      Form: "Sheet",
+      Finish: "Hot rolled / CR options",
+      Supply: "By gauge & size",
+    },
+    image: u("photo-1581094794329-c8112a89af12"),
+  },
+  {
+    name: "Mild Steel Pipe Bundle",
+    categorySlug: "ms-products",
+    price: 1,
     stock: 60,
-    brand: "AutoCtrl",
-    featured: true,
-    shortDesc: "Industrial relay board for PLC and control panels.",
+    brand: "SteelForge",
+    bestSeller: true,
+    shortDesc: "MS pipes for structures, frames, and industrial piping jobs.",
     description:
-      "8-channel 24V relay module designed for automation panels, PLC IO expansion and machine control.",
-    tags: ["PLC", "relay", "automation"],
+      "Mild steel pipes and related MS products for structures, frames, and plant utilities. Contact Nidus Trading for diameters, lengths, and project quantities.",
+    tags: ["mild steel pipes", "MS pipe Pakistan", "structural steel"],
     specifications: {
-      Channels: "8",
-      Voltage: "24V DC",
-      Isolation: "Optocoupler",
-      Mount: "DIN / panel",
+      Form: "Pipe / tube",
+      Finish: "Black MS",
+      Supply: "Bundle / length",
     },
+    image: u("photo-1504917595217-d4dc5ebe6122", 1000),
+  },
+  // Wooden Items
+  {
+    name: "Commercial Wooden Furniture Set",
+    categorySlug: "wooden-items",
+    price: 1,
+    stock: 20,
+    brand: "WoodCraft NT",
+    featured: true,
+    shortDesc: "Furniture solutions for offices, showrooms, and project fit-outs.",
+    description:
+      "Wooden furniture for commercial and light industrial interiors. Request a quote for standard or custom configurations from Nidus Trading.",
+    tags: ["wooden furniture Pakistan", "office furniture", "commercial wood"],
+    specifications: {
+      Material: "Hardwood / engineered",
+      Finish: "Project specified",
+      Supply: "Set / custom",
+    },
+    image: u("photo-1616486338812-3dadae4b4ace", 1000),
   },
   {
-    name: "Solar Panel 550W Mono Perc",
-    categorySlug: "renewable-energy-products",
-    price: 42000,
-    discountPrice: 38900,
+    name: "Custom Workshop Fixtures",
+    categorySlug: "wooden-items",
+    price: 1,
     stock: 25,
-    brand: "SunPeak",
-    featured: true,
+    brand: "WoodCraft NT",
     bestSeller: true,
-    shortDesc: "High-efficiency monocrystalline solar module.",
+    shortDesc: "Wooden fixtures and benches for workshops and assembly areas.",
     description:
-      "550W mono PERC solar panel for residential and commercial renewable energy installations across Pakistan.",
-    tags: ["solar panel", "renewable energy", "550W"],
+      "Custom wooden fixtures including workbench tops and shop fittings for workshops, labs, and assembly stations. Built to inquiry specifications.",
+    tags: ["wooden fixtures", "workbench", "custom wooden products"],
     specifications: {
-      Power: "550W",
-      Type: "Mono PERC",
-      Efficiency: "21%+",
-      Warranty: "12 years product",
+      Material: "Hardwood laminate",
+      Size: "Custom",
+      Thickness: "Up to 40 mm",
+      Finish: "Oil sealed options",
     },
+    image: u("photo-1586023492125-27b2c045efd7"),
   },
-  {
-    name: "Online UPS 3kVA",
-    categorySlug: "power-backup-solutions",
-    price: 125000,
-    stock: 12,
-    brand: "PowerKeep",
-    featured: true,
-    shortDesc: "True online UPS for servers and critical loads.",
-    description:
-      "3kVA online UPS with pure sine wave output for IT rooms, clinics and industrial control systems.",
-    tags: ["UPS", "power backup", "3kVA"],
-    specifications: {
-      Capacity: "3kVA",
-      Topology: "Online double conversion",
-      Output: "Pure sine wave",
-      Runtime: "Depends on battery bank",
-    },
-  },
-  {
-    name: "Digital Vernier Caliper 150mm",
-    categorySlug: "tools-measuring-instruments",
-    price: 4200,
-    discountPrice: 3650,
-    stock: 75,
-    brand: "PrecisMeasure",
-    bestSeller: true,
-    shortDesc: "Stainless steel digital caliper with LCD display.",
-    description:
-      "Precision measuring instrument for workshops, QC labs and fabrication floors.",
-    tags: ["vernier caliper", "measuring instruments", "precision tools"],
-    specifications: {
-      Range: "0-150 mm",
-      Resolution: "0.01 mm",
-      Material: "Stainless steel",
-      Power: "Button cell",
-    },
-  },
-  {
-    name: "Steel Wire Rope 12mm",
-    categorySlug: "safety-lifting-equipment",
-    price: 980,
-    stock: 300,
-    brand: "LiftSafe",
-    featured: true,
-    shortDesc: "Galvanized lifting wire rope sold per meter.",
-    description:
-      "Durable galvanized steel wire rope for cranes, winches and industrial lifting applications.",
-    tags: ["steel wire rope", "lifting", "rigging"],
-    specifications: {
-      Diameter: "12 mm",
-      Construction: "6x19",
-      Finish: "Galvanized",
-      Unit: "Per meter",
-    },
-  },
+  // Paint Items
   {
     name: "Industrial Epoxy Floor Paint 20L",
     categorySlug: "paint-items",
-    price: 28500,
+    price: 1,
     stock: 18,
     brand: "CoatMax",
-    shortDesc: "High-build epoxy coating for factory floors.",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "High-build epoxy coating for factory and warehouse floors.",
     description:
-      "Chemical-resistant industrial epoxy paint for warehouses, workshops and production areas.",
-    tags: ["industrial paint", "epoxy", "floor coating"],
+      "Chemical-resistant industrial paint for warehouses, workshops, and production areas. Part of our paint items range covering industrial, building, and pre-paint needs.",
+    tags: ["industrial paint Pakistan", "epoxy floor paint", "factory coating"],
     specifications: {
       Pack: "20 liters",
       Type: "2K Epoxy",
       Finish: "Semi-gloss",
       Coverage: "~5 m²/L",
     },
+    image: u("photo-1562259949-e8e7689d7828"),
   },
+  {
+    name: "Auto Refinish Paint System",
+    categorySlug: "paint-items",
+    price: 1,
+    stock: 30,
+    brand: "CoatMax",
+    featured: true,
+    shortDesc: "Auto paint and related pre-paint items for body shops.",
+    description:
+      "Auto paint systems and pre-paint items for workshops and fleets. Request a quote for colors, primers, and supporting materials.",
+    tags: ["auto paint Pakistan", "refinish paint", "pre-paint items"],
+    specifications: {
+      Category: "Automotive refinish",
+      Includes: "Base / clear options",
+      Support: "Pre-paint materials",
+    },
+    image: u("photo-1589939705384-5185137a7f0f", 1000),
+  },
+  {
+    name: "Building Exterior Paint Range",
+    categorySlug: "paint-items",
+    price: 1,
+    stock: 45,
+    brand: "CoatMax",
+    shortDesc: "Building paints for commercial and industrial structures.",
+    description:
+      "Building paints for exterior and interior commercial projects. Quote-based supply for contractors and facility teams.",
+    tags: ["building paints", "commercial paint", "industrial coatings"],
+    specifications: {
+      Use: "Building interiors/exteriors",
+      Finish: "Matt / sheen options",
+      Supply: "By project volume",
+    },
+    image: u("photo-1581858726788-75bc0f6a952d"),
+  },
+  // Hardware Items
   {
     name: "Hex Bolt Set M10 Assorted",
     categorySlug: "hardware-items",
-    price: 3200,
+    price: 1,
     stock: 150,
     brand: "FixAll",
+    featured: true,
     bestSeller: true,
     shortDesc: "Assorted M10 hex bolts with nuts and washers.",
     description:
-      "Workshop-ready hardware assortment for maintenance teams and fabricators.",
-    tags: ["hardware", "hex bolts", "fasteners"],
+      "Workshop-ready hardware assortment for maintenance teams and fabricators. Nidus Trading supplies all types of hardware items for industrial and commercial use.",
+    tags: ["hardware items Pakistan", "hex bolts", "industrial fasteners"],
     specifications: {
       Size: "M10",
       Material: "Grade 8.8",
       Finish: "Zinc plated",
       Pack: "Assorted lengths",
     },
+    image: u("photo-1504148455328-c376907d081c"),
   },
   {
-    name: "Custom Workshop Workbench Top",
-    categorySlug: "wooden-items",
-    price: 18500,
-    stock: 10,
-    brand: "WoodCraft NT",
-    shortDesc: "Hardwood workbench top for industrial benches.",
+    name: "Industrial Hardware Essentials Kit",
+    categorySlug: "hardware-items",
+    price: 1,
+    stock: 100,
+    brand: "FixAll",
+    featured: true,
+    shortDesc: "Clamps, brackets, hinges and general hardware for projects.",
     description:
-      "Custom wooden workbench tops for workshops, labs and assembly stations. Built to order on request.",
-    tags: ["wooden items", "workbench", "custom wood"],
+      "Broad hardware kit covering clamps, brackets, hinges, and related fittings for plant stores and project contractors.",
+    tags: ["industrial hardware", "brackets", "project hardware"],
     specifications: {
-      Material: "Hardwood laminate",
-      Size: "Custom",
-      Thickness: "40 mm",
-      Finish: "Oil sealed",
+      Includes: "Mixed hardware",
+      Audience: "Maintenance & projects",
+      Supply: "Kit / bulk",
     },
+    image: u("photo-1530124566582-a618bc2615dc", 900),
+  },
+  // Caster Wheels
+  {
+    name: "Heavy Duty Industrial Caster Wheel 6 inch",
+    categorySlug: "caster-wheels",
+    price: 1,
+    stock: 120,
+    brand: "NidusPro",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "Swivel caster with brake for industrial carts and machinery.",
+    description:
+      "Premium heavy duty industrial caster wheels engineered for warehouses, factories, and logistics. Suitable for continuous load applications across Pakistan industries. Request a quote for diameter, load rating, and quantity.",
+    tags: [
+      "industrial caster wheels Pakistan",
+      "heavy duty caster wheels",
+      "warehouse wheels",
+    ],
+    specifications: {
+      Diameter: "6 inch",
+      "Load Capacity": "350 kg",
+      Material: "Polyurethane on cast iron",
+      Mount: "Top plate with brake",
+    },
+    image: u("photo-1586528116311-ad8dd3c8310d", 1000),
+  },
+  {
+    name: "Rigid Industrial Caster Wheel 8 inch",
+    categorySlug: "caster-wheels",
+    price: 1,
+    stock: 90,
+    brand: "NidusPro",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "High-capacity rigid caster for heavy carts and racks.",
+    description:
+      "Heavy duty industrial caster wheels in rigid configuration for straight-line movement of heavy loads. All types and sizes available on inquiry.",
+    tags: ["industrial caster wheels", "8 inch caster", "heavy duty wheels Pakistan"],
+    specifications: {
+      Diameter: "8 inch",
+      Type: "Rigid",
+      Material: "Polyurethane",
+      Duty: "Heavy industrial",
+    },
+    image: u("photo-1578574577315-2f56bdb47c0f"),
+  },
+  {
+    name: "Swivel Caster Wheel with Dual Lock",
+    categorySlug: "caster-wheels",
+    price: 1,
+    stock: 110,
+    brand: "NidusPro",
+    shortDesc: "Swivel industrial caster with total-lock brake system.",
+    description:
+      "Swivel caster wheels with dual lock for carts, trolleys, and mobile equipment. Inquire for load ratings matching your floor and duty cycle.",
+    tags: ["swivel caster wheels", "caster with brake", "industrial wheels"],
+    specifications: {
+      Type: "Swivel + dual lock",
+      Mount: "Top plate",
+      Duty: "Medium–heavy",
+    },
+    image: u("photo-1605745341112-85968b19335b"),
+  },
+  // Safety & Lifting
+  {
+    name: "Steel Wire Rope 12mm",
+    categorySlug: "safety-lifting-equipment",
+    price: 1,
+    stock: 300,
+    brand: "LiftSafe",
+    featured: true,
+    bestSeller: true,
+    shortDesc: "Galvanized steel wire rope for cranes, winches, and lifting.",
+    description:
+      "Durable galvanized steel wire ropes for cranes, winches, and industrial lifting applications. Supplied with related rigging hardware on request.",
+    tags: ["steel wire ropes Pakistan", "lifting equipment", "rigging"],
+    specifications: {
+      Diameter: "12 mm",
+      Construction: "6x19",
+      Finish: "Galvanized",
+      Unit: "Per meter",
+    },
+    image: u("photo-1504307651254-35680f356dfd", 1000),
+  },
+  {
+    name: "Rigging Hardware Set",
+    categorySlug: "safety-lifting-equipment",
+    price: 1,
+    stock: 80,
+    brand: "LiftSafe",
+    featured: true,
+    shortDesc: "Shackles, hooks and rigging fittings for lifting teams.",
+    description:
+      "Rigging hardware for industrial lifting and material handling. Pair with steel wire ropes and safety items from Nidus Trading’s catalog.",
+    tags: ["rigging hardware", "shackles", "lifting accessories Pakistan"],
+    specifications: {
+      Includes: "Shackles / hooks mix",
+      Finish: "Galvanized options",
+      Use: "Lifting & securing",
+    },
+    image: u("photo-1581092160562-40aa08e78837"),
+  },
+  {
+    name: "Industrial Safety PPE Bundle",
+    categorySlug: "safety-lifting-equipment",
+    price: 1,
+    stock: 95,
+    brand: "LiftSafe",
+    bestSeller: true,
+    shortDesc: "Safety gear assortment for plant and construction sites.",
+    description:
+      "All types of safety items for industrial sites — PPE bundles and related protective equipment. Request a quote for crew sizes and site requirements.",
+    tags: ["safety equipment Pakistan", "industrial PPE", "site safety"],
+    specifications: {
+      Includes: "Helmets, gloves, vests options",
+      Audience: "Plant & site crews",
+      Supply: "Bundle / bulk",
+    },
+    image: u("photo-1504917595217-d4dc5ebe6122", 900),
   },
 ];
 
@@ -401,7 +680,6 @@ const blogPosts = [
     slug: "industrial-caster-wheels-pakistan-guide",
     excerpt:
       "A practical buying guide for warehouses and factories selecting heavy duty caster wheels.",
-    // SEO: target "industrial caster wheels Pakistan"
     content: `Selecting the right industrial caster wheels Pakistan operations depend on load rating, floor type and duty cycle.
 
 ## Key factors
@@ -410,21 +688,21 @@ const blogPosts = [
 - Brake and lock requirements
 - Polyurethane vs rubber tread
 
-Nidus Trading supplies heavy duty industrial caster wheels in multiple diameters for carts, racks and machinery bases.
+Nidus Trading supplies heavy duty industrial caster wheels in multiple diameters for carts, racks and machinery bases. Browse our [Caster Wheels](/products?category=caster-wheels) category and [request a quote](/inquiry) for your duty cycle.
 
-## Internal linking strategy
-Link from this article to the Caster Wheels category page and best-seller product pages to strengthen topical authority.`,
+## Next steps
+Share load, diameter, and quantity requirements — our team responds with a tailored quotation for B2B and project orders.`,
     tags: ["industrial caster wheels Pakistan", "warehouse equipment"],
     metaTitle: "Industrial Caster Wheels Pakistan | Buying Guide | Nidus Trading",
     metaDesc:
       "Learn how to choose heavy duty industrial caster wheels in Pakistan. Load ratings, materials and supplier tips from Nidus Trading.",
-    coverImage: "/images/blog-casters.svg",
+    coverImage: u("photo-1586528116311-ad8dd3c8310d", 1400),
   },
   {
     title: "Electronic Components Supplier Checklist for Procurement Teams",
     slug: "electronic-components-supplier-checklist",
     excerpt:
-      "What B2B buyers should verify before sourcing resistors, ICs, sensors and more.",
+      "What B2B buyers should verify before sourcing resistors, capacitors, semiconductors and more.",
     content: `Working with a reliable electronic components supplier reduces downtime and counterfeit risk.
 
 ## Checklist
@@ -433,32 +711,32 @@ Link from this article to the Caster Wheels category page and best-seller produc
 3. MOQ flexibility for prototypes and bulk
 4. Fast quotation turnaround
 
-Nidus Trading supports both prototype labs and production procurement with competitive pricing.`,
+Nidus Trading supports both prototype labs and production procurement. Explore [Electronic Components](/products?category=electronic-components) or [submit an inquiry](/inquiry) with your BOM.`,
     tags: ["electronic components supplier", "procurement"],
     metaTitle: "Electronic Components Supplier Checklist | Nidus Trading",
     metaDesc:
       "Procurement checklist for sourcing electronic components in Pakistan. Quality, stock and quotation tips from Nidus Trading.",
-    coverImage: "/images/blog-electronics.svg",
+    coverImage: u("photo-1518770660439-4636190af475", 1400),
   },
   {
-    title: "Mild Steel Plates Price Factors Every Fabricator Should Know",
-    slug: "mild-steel-plates-price-factors",
+    title: "Mild Steel Plates in Pakistan: Specs Fabricators Should Confirm",
+    slug: "mild-steel-plates-pakistan-buying-guide",
     excerpt:
-      "Understand what drives mild steel plates price and how to plan purchases smarter.",
-    content: `Mild steel plates price fluctuates with grade, thickness, finish and market demand.
+      "Thickness, grade, finish and logistics — what to confirm before ordering MS plates.",
+    content: `Mild steel plates are a core MS product for fabrication shops and construction teams across Pakistan.
 
-## Cost drivers
+## Specs to confirm
 - Thickness and cut size
 - Hot-rolled vs processed plates
 - Delivery location
 - Order volume
 
-Request a quote from Nidus Trading for current MS plate availability and bulk pricing.`,
-    tags: ["mild steel plates price", "MS products"],
-    metaTitle: "Mild Steel Plates Price Guide | Nidus Trading",
+Browse [MS Products](/products?category=ms-products) including mild steel sheets, plates and pipes, then [request a quote](/inquiry) from Nidus Trading for current availability.`,
+    tags: ["mild steel plates Pakistan", "MS products"],
+    metaTitle: "Mild Steel Plates Pakistan | Buying Guide | Nidus Trading",
     metaDesc:
-      "What affects mild steel plates price in Pakistan? Thickness, grade, volume and logistics explained by Nidus Trading.",
-    coverImage: "/images/blog-steel.svg",
+      "What to confirm when buying mild steel plates in Pakistan — thickness, grade, volume and logistics from Nidus Trading.",
+    coverImage: u("photo-1565193566173-7a0ee3dbe261", 1400),
   },
 ];
 
@@ -479,7 +757,7 @@ function slugFromName(name: string) {
 }
 
 async function main() {
-  console.log("Seeding Nidus Trading database...");
+  console.log("Seeding Nidus Trading database (inquiry catalog)...");
 
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
@@ -544,7 +822,7 @@ async function main() {
         bestSeller: p.bestSeller ?? false,
         tags: JSON.stringify(p.tags),
         specifications: JSON.stringify(p.specifications),
-        images: JSON.stringify([`/images/products/product-${(i % 6) + 1}.svg`]),
+        images: JSON.stringify([p.image]),
         categoryId,
       },
     });
@@ -574,20 +852,20 @@ async function main() {
         shippingAddress: "Industrial Area, Plot 12",
         city: "Lahore",
         status: "PROCESSING",
-        subtotal: 10000,
-        discount: 500,
+        subtotal: 0,
+        discount: 0,
         tax: 0,
-        shipping: 300,
-        total: 9800,
-        notes: "Please call before delivery",
+        shipping: 0,
+        total: 0,
+        notes: "Quote request sample — please call before delivery",
         items: {
           create: sampleProducts.map((sp, idx) => ({
             productId: sp.id,
             name: sp.name,
             sku: sp.sku,
-            price: sp.discountPrice ?? sp.price,
+            price: 0,
             quantity: idx + 1,
-            total: (sp.discountPrice ?? sp.price) * (idx + 1),
+            total: 0,
           })),
         },
       },
@@ -595,9 +873,10 @@ async function main() {
   }
 
   console.log("Seed complete.");
+  console.log(`Categories: ${categories.length}, Products: ${products.length}`);
   console.log("Admin: admin@nidustrading.com / Admin@Nidus2026");
   console.log("Customer: customer@example.com / Customer@123");
-  console.log("Track demo order: NT-DEMO-1001");
+  console.log("Track demo quote: NT-DEMO-1001");
 }
 
 main()

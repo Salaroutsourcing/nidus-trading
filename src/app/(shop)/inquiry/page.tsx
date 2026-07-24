@@ -4,7 +4,7 @@ import { InquiryForm } from "./inquiry-form";
 export const metadata = {
   title: "Request a Quote",
   description:
-    "Submit bulk and custom order inquiries to Nidus Trading for competitive industrial pricing.",
+    "Submit bulk and custom order inquiries to Nidus Trading for industrial and electronic supply quotations across Pakistan.",
 };
 
 export default function InquiryPage() {

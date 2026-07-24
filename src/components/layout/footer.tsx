@@ -27,7 +27,7 @@ export function Footer() {
             ))}
             <li>
               <Link href="/track-order" className="hover:text-[var(--accent)]">
-                Track Order
+                Track Quote / Order
               </Link>
             </li>
           </ul>

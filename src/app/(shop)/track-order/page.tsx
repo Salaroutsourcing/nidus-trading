@@ -5,17 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatPKR } from "@/lib/utils";
 
 type TrackedOrder = {
   id: string;
   orderNumber: string;
   status: string;
-  total: number;
   createdAt: string;
   customerName: string;
   city?: string | null;
-  items: Array<{ name: string; quantity: number; total: number }>;
+  items: Array<{ name: string; quantity: number; sku?: string }>;
 };
 
 function statusTone(status: string) {
@@ -42,12 +40,12 @@ function TrackOrderForm() {
     const data = await res.json();
     setLoading(false);
     if (!res.ok) {
-      setError(data.error || "Unable to track order");
+      setError(data.error || "Unable to track request");
       setOrders([]);
       return;
     }
     setOrders(data.orders || []);
-    if (!data.orders?.length) setError("No orders found");
+    if (!data.orders?.length) setError("No quote requests found");
   }
 
   useEffect(() => {
@@ -69,9 +67,9 @@ function TrackOrderForm() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-6">
-      <h1 className="display-font text-4xl font-semibold">Track Your Order</h1>
+      <h1 className="display-font text-4xl font-semibold">Track Quote / Order</h1>
       <p className="mt-2 text-[var(--muted)]">
-        Enter your Order ID or email to view real-time status updates.
+        Enter your quote reference or email to view status updates.
       </p>
 
       <form
@@ -80,7 +78,7 @@ function TrackOrderForm() {
       >
         <Input
           name="orderNumber"
-          placeholder="Order ID (e.g. NT-DEMO-1001)"
+          placeholder="Reference (e.g. NT-DEMO-1001)"
           defaultValue={searchParams.get("orderNumber") || ""}
         />
         <Input
@@ -114,20 +112,20 @@ function TrackOrderForm() {
             </div>
             <ul className="mt-4 space-y-2 text-sm">
               {order.items.map((item, idx) => (
-                <li key={idx} className="flex justify-between">
+                <li key={idx} className="flex justify-between gap-3">
                   <span>
-                    {item.name} × {item.quantity}
+                    {item.name}
+                    {item.sku ? (
+                      <span className="text-[var(--muted)]"> · {item.sku}</span>
+                    ) : null}
                   </span>
-                  <span>{formatPKR(item.total)}</span>
+                  <span className="shrink-0 text-[var(--muted)]">× {item.quantity}</span>
                 </li>
               ))}
             </ul>
-            <div className="mt-4 flex justify-between border-t border-[var(--border)] pt-3 text-sm font-semibold">
-              <span>Total</span>
-              <span>{formatPKR(order.total)}</span>
-            </div>
-            <p className="mt-2 text-xs text-[var(--muted)]">
-              Placed {new Date(order.createdAt).toLocaleString()}
+            <p className="mt-4 border-t border-[var(--border)] pt-3 text-xs text-[var(--muted)]">
+              Submitted {new Date(order.createdAt).toLocaleString()} · Commercial
+              terms confirmed separately
             </p>
           </div>
         ))}

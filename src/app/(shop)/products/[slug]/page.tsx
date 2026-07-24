@@ -6,12 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { JsonLd } from "@/components/seo/json-ld";
 import { COMPANY } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
-import {
-  formatPKR,
-  getEffectivePrice,
-  parseJsonArray,
-  parseJsonObject,
-} from "@/lib/utils";
+import { parseJsonArray, parseJsonObject } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -19,14 +14,24 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({ where: { slug } });
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: { category: true },
+  });
   if (!product) return { title: "Product" };
+  const title = `${product.name} | ${product.category.name} | Nidus Trading`;
+  const description =
+    product.shortDesc ||
+    `${product.name} from Nidus Trading — request a quote for industrial supply in Pakistan.`;
+  const images = parseJsonArray(product.images);
   return {
-    title: product.name,
-    description: product.shortDesc || product.description.slice(0, 155),
+    title,
+    description,
+    keywords: parseJsonArray(product.tags),
     openGraph: {
-      title: product.name,
-      description: product.shortDesc || product.description.slice(0, 155),
+      title,
+      description,
+      images: images[0] ? [images[0]] : undefined,
     },
   };
 }
@@ -42,8 +47,9 @@ export default async function ProductDetailPage({ params }: Props) {
   const images = parseJsonArray(product.images);
   const specs = parseJsonObject(product.specifications);
   const tags = parseJsonArray(product.tags);
-  const price = getEffectivePrice(product.price, product.discountPrice);
-  const image = images[0] || "/images/products/product-1.svg";
+  const image =
+    images[0] ||
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   const productSchema = {
@@ -53,16 +59,20 @@ export default async function ProductDetailPage({ params }: Props) {
     description: product.description,
     sku: product.sku,
     brand: product.brand || COMPANY.name,
-    image: `${appUrl}${image}`,
+    image: image.startsWith("http") ? image : `${appUrl}${image}`,
+    category: product.category.name,
     offers: {
       "@type": "Offer",
-      priceCurrency: "PKR",
-      price,
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
+          : "https://schema.org/PreOrder",
       url: `${appUrl}/products/${product.slug}`,
+      seller: {
+        "@type": "Organization",
+        name: COMPANY.name,
+      },
+      description: "Request a quote — pricing provided on inquiry",
     },
   };
 
@@ -80,6 +90,12 @@ export default async function ProductDetailPage({ params }: Props) {
       {
         "@type": "ListItem",
         position: 3,
+        name: product.category.name,
+        item: `${appUrl}/products?category=${product.category.slug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
         name: product.name,
         item: `${appUrl}/products/${product.slug}`,
       },
@@ -89,13 +105,16 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:px-6">
       <JsonLd data={[productSchema, breadcrumbSchema]} />
-      <nav className="mb-6 text-sm text-[var(--muted)]">
+      <nav className="mb-6 text-sm text-[var(--muted)]" aria-label="Breadcrumb">
         <Link href="/">Home</Link> / <Link href="/products">Products</Link> /{" "}
-        <span className="text-[var(--foreground)]">{product.name}</span>
+        <Link href={`/products?category=${product.category.slug}`}>
+          {product.category.name}
+        </Link>{" "}
+        / <span className="text-[var(--foreground)]">{product.name}</span>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-[var(--border)]">
+        <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-[var(--border)] shadow-xl shadow-black/10">
           <Image
             src={image}
             alt={product.name}
@@ -117,19 +136,20 @@ export default async function ProductDetailPage({ params }: Props) {
             <p className="mt-2 text-sm text-[var(--muted)]">SKU: {product.sku}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.bestSeller && <Badge tone="warning">Best Seller</Badge>}
-              <Badge tone={product.stock > 0 ? "success" : "danger"}>
-                {product.stock > 0 ? "In Stock" : "Out of Stock"}
+              <Badge tone={product.stock > 0 ? "success" : "info"}>
+                {product.stock > 0 ? "Available on Quote" : "Inquire for Availability"}
               </Badge>
             </div>
           </div>
 
-          <div>
-            <p className="text-3xl font-bold">{formatPKR(price)}</p>
-            {price < product.price && (
-              <p className="text-sm text-[var(--muted)] line-through">
-                {formatPKR(product.price)}
-              </p>
-            )}
+          <div className="glass rounded-2xl border border-[var(--border)] px-5 py-4">
+            <p className="text-lg font-semibold text-[var(--navy)]">
+              Pricing on request
+            </p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              Quote-driven supply for B2B and project buyers. Add to your quote list
+              or submit an inquiry for commercial terms.
+            </p>
           </div>
 
           <p className="text-[var(--muted)] leading-relaxed">
@@ -142,7 +162,6 @@ export default async function ProductDetailPage({ params }: Props) {
               name: product.name,
               slug: product.slug,
               sku: product.sku,
-              price,
               stock: product.stock,
               image,
             }}
@@ -172,6 +191,20 @@ export default async function ProductDetailPage({ params }: Props) {
               ))}
             </div>
           )}
+
+          <p className="text-sm text-[var(--muted)]">
+            Related:{" "}
+            <Link
+              href={`/products?category=${product.category.slug}`}
+              className="font-medium text-[var(--accent)] hover:underline"
+            >
+              More {product.category.name}
+            </Link>{" "}
+            ·{" "}
+            <Link href="/inquiry" className="font-medium text-[var(--accent)] hover:underline">
+              Bulk inquiry
+            </Link>
+          </p>
         </div>
       </div>
     </div>

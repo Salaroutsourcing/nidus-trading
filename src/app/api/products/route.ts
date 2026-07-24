@@ -49,6 +49,18 @@ export async function GET(req: NextRequest) {
     orderBy,
   });
 
+  // Hide monetary fields on public API responses (admin retains full records)
+  if (!admin) {
+    return NextResponse.json(
+      products.map((p) => {
+        const { price: _price, discountPrice: _discount, ...rest } = p;
+        void _price;
+        void _discount;
+        return rest;
+      })
+    );
+  }
+
   return NextResponse.json(products);
 }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingCart, X } from "lucide-react";
+import { ClipboardList, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 import { COMPANY, NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -55,8 +55,8 @@ export function Header() {
           </Button>
           <ThemeToggle />
           <Button asChild variant="ghost" size="icon" className="relative">
-            <Link href="/cart" aria-label="Cart">
-              <ShoppingCart className="h-4 w-4" />
+            <Link href="/cart" aria-label="Quote list">
+              <ClipboardList className="h-4 w-4" />
               {totalItems > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-bold text-white">
                   {totalItems}

@@ -1,7 +1,7 @@
 export const COMPANY = {
   name: "Nidus Trading",
   tagline:
-    "Premium Industrial & Electronic Solutions – Quality, Reliability, Competitive Pricing",
+    "Premium Industrial & Electronic Solutions – Quality, Reliability, Quote-Driven Supply",
   phone: "0349-0307920",
   phoneHref: "tel:+923490307920",
   email: "info@nidustrading.com",

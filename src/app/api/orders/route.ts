@@ -3,7 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { generateOrderNumber, getEffectivePrice } from "@/lib/utils";
+import { generateOrderNumber } from "@/lib/utils";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -50,40 +50,29 @@ export async function POST(req: NextRequest) {
   });
 
   if (products.length !== productIds.length) {
-    return NextResponse.json({ error: "Invalid products in cart" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid products in quote list" }, { status: 400 });
   }
 
+  // Inquiry-first: store trackable quote request without public pricing / stock deduction
   const lineItems = data.items.map((item) => {
     const product = products.find((p) => p.id === item.productId)!;
-    if (product.stock < item.quantity) {
-      throw new Error(`Insufficient stock for ${product.name}`);
-    }
-    const price = getEffectivePrice(product.price, product.discountPrice);
     return {
       productId: product.id,
       name: product.name,
       sku: product.sku,
-      price,
+      price: 0,
       quantity: item.quantity,
-      total: price * item.quantity,
+      total: 0,
     };
   });
 
-  const subtotal = lineItems.reduce((s, i) => s + i.total, 0);
-  const shipping = subtotal > 50000 ? 0 : 500;
-  const tax = 0;
-  const discount = 0;
-  const total = subtotal + shipping + tax - discount;
+  const itemSummary = lineItems
+    .map((i) => `${i.name} × ${i.quantity} (${i.sku})`)
+    .join("; ");
 
   try {
     const order = await prisma.$transaction(async (tx) => {
-      for (const item of data.items) {
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
-        });
-      }
-      return tx.order.create({
+      const created = await tx.order.create({
         data: {
           orderNumber: generateOrderNumber(),
           userId: session?.user?.id,
@@ -95,21 +84,42 @@ export async function POST(req: NextRequest) {
           city: data.city,
           notes: data.notes,
           status: "PENDING",
-          subtotal,
-          discount,
-          tax,
-          shipping,
-          total,
+          subtotal: 0,
+          discount: 0,
+          tax: 0,
+          shipping: 0,
+          total: 0,
           items: { create: lineItems },
         },
         include: { items: true },
       });
+
+      await tx.inquiry.create({
+        data: {
+          name: data.customerName,
+          email: data.customerEmail.toLowerCase(),
+          phone: data.customerPhone,
+          company: data.company,
+          subject: `Quote request ${created.orderNumber}`,
+          message: [
+            data.notes || "Quote request submitted from catalog quote list.",
+            `Items: ${itemSummary}`,
+            `Address: ${data.shippingAddress}${data.city ? `, ${data.city}` : ""}`,
+          ].join("\n\n"),
+          productInterest: itemSummary.slice(0, 500),
+          quantity: String(lineItems.reduce((s, i) => s + i.quantity, 0)),
+          status: "NEW",
+          userId: session?.user?.id,
+        },
+      });
+
+      return created;
     });
 
     return NextResponse.json(order, { status: 201 });
   } catch (e) {
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Order failed" },
+      { error: e instanceof Error ? e.message : "Quote request failed" },
       { status: 400 }
     );
   }

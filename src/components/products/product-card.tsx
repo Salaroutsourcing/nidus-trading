@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { formatPKR, getEffectivePrice, parseJsonArray } from "@/lib/utils";
+import { parseJsonArray } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 
 type ProductCardProps = {
@@ -16,12 +16,11 @@ type ProductCardProps = {
     name: string;
     slug: string;
     sku: string;
-    price: number;
-    discountPrice?: number | null;
     stock: number;
     images: string;
     brand?: string | null;
     bestSeller?: boolean;
+    shortDesc?: string | null;
     category?: { name: string } | null;
   };
 };
@@ -29,9 +28,9 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCart((s) => s.addItem);
   const images = parseJsonArray(product.images);
-  const image = images[0] || "/images/products/product-1.svg";
-  const price = getEffectivePrice(product.price, product.discountPrice);
-  const onSale = price < product.price;
+  const image =
+    images[0] ||
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80";
 
   return (
     <GlassCard className="group overflow-hidden p-0">
@@ -44,9 +43,9 @@ export function ProductCard({ product }: ProductCardProps) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width:768px) 100vw, 33vw"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--navy)]/45 via-transparent to-transparent opacity-80" />
           <div className="absolute left-3 top-3 flex gap-2">
             {product.bestSeller && <Badge tone="warning">Best Seller</Badge>}
-            {onSale && <Badge tone="success">Sale</Badge>}
           </div>
         </div>
       </Link>
@@ -60,16 +59,19 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </Link>
+          {product.shortDesc && (
+            <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">
+              {product.shortDesc}
+            </p>
+          )}
         </div>
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-lg font-bold">{formatPKR(price)}</p>
-            {onSale && (
-              <p className="text-xs text-[var(--muted)] line-through">
-                {formatPKR(product.price)}
-              </p>
-            )}
-          </div>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href={`/inquiry?product=${encodeURIComponent(product.name)}`}
+            className="text-sm font-medium text-[var(--accent)] hover:underline"
+          >
+            Request Quote
+          </Link>
           <Button
             size="sm"
             disabled={product.stock <= 0}
@@ -79,14 +81,14 @@ export function ProductCard({ product }: ProductCardProps) {
                 name: product.name,
                 slug: product.slug,
                 sku: product.sku,
-                price,
+                price: 0,
                 image,
                 stock: product.stock,
               });
-              toast.success("Added to cart");
+              toast.success("Added to quote list");
             }}
           >
-            <ShoppingCart className="h-4 w-4" />
+            <ClipboardList className="h-4 w-4" />
             Add
           </Button>
         </div>

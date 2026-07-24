@@ -13,7 +13,7 @@ export default function ContactPage() {
     <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
       <h1 className="display-font text-4xl font-semibold">Contact Us</h1>
       <p className="mt-2 text-[var(--muted)]">
-        Reach our team for product availability, pricing, and project support.
+        Reach our team for product availability, quotations, and project support.
       </p>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">

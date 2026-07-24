@@ -76,31 +76,6 @@ export function ProductsFilters({
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-            Min
-          </label>
-          <Input
-            type="number"
-            placeholder="0"
-            defaultValue={searchParams.get("minPrice") || ""}
-            onBlur={(e) => update("minPrice", e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-            Max
-          </label>
-          <Input
-            type="number"
-            placeholder="Any"
-            defaultValue={searchParams.get("maxPrice") || ""}
-            onBlur={(e) => update("maxPrice", e.target.value)}
-          />
-        </div>
-      </div>
-
       <div>
         <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
           Sort
@@ -111,9 +86,8 @@ export function ProductsFilters({
           onChange={(e) => update("sort", e.target.value)}
         >
           <option value="newest">Newest</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
           <option value="name">Name A–Z</option>
+          <option value="featured">Featured first</option>
         </select>
       </div>
 

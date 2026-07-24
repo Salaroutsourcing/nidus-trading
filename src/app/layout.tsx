@@ -21,7 +21,7 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: {
-    default: `${COMPANY.name} | Industrial & Electronic Solutions`,
+    default: `${COMPANY.name} | Premium Industrial & Electronic Solutions Pakistan`,
     template: `%s | ${COMPANY.name}`,
   },
   description: COMPANY.tagline,
@@ -29,22 +29,36 @@ export const metadata: Metadata = {
     "Nidus Trading",
     "industrial caster wheels Pakistan",
     "electronic components supplier",
-    "mild steel plates price",
-    "electrical items",
-    "hardware supplier Pakistan",
+    "mild steel plates Pakistan",
+    "mild steel pipes",
+    "electrical items supplier Pakistan",
+    "industrial hardware supplier",
+    "safety lifting equipment Pakistan",
+    "B2B industrial trading",
   ],
   openGraph: {
-    title: COMPANY.name,
+    title: `${COMPANY.name} | Premium Industrial & Electronic Solutions`,
     description: COMPANY.tagline,
     url: appUrl,
     siteName: COMPANY.name,
     type: "website",
     locale: "en_PK",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1200&q=80",
+        width: 1200,
+        height: 630,
+        alt: "Nidus Trading industrial supply",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: COMPANY.name,
+    title: `${COMPANY.name} | Industrial & Electronic Solutions`,
     description: COMPANY.tagline,
+  },
+  alternates: {
+    canonical: appUrl,
   },
 };
 
@@ -62,6 +76,14 @@ export default function RootLayout({
     email: COMPANY.email,
     description: COMPANY.tagline,
     areaServed: "Pakistan",
+    slogan: "Premium Industrial & Electronic Solutions",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+92-349-0307920",
+      contactType: "sales",
+      areaServed: "PK",
+      availableLanguage: ["English", "Urdu"],
+    },
   };
 
   return (

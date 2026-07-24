@@ -14,7 +14,6 @@ export function AddToCartPanel({
     name: string;
     slug: string;
     sku: string;
-    price: number;
     stock: number;
     image?: string;
   };
@@ -29,19 +28,18 @@ export function AddToCartPanel({
         <input
           type="number"
           min={1}
-          max={product.stock}
+          max={Math.max(1, product.stock)}
           value={qty}
           onChange={(e) => setQty(Number(e.target.value))}
           className="h-11 w-24 rounded-xl border border-[var(--border)] bg-white/40 px-3 dark:bg-white/5"
         />
         <span className="text-sm text-[var(--muted)]">
-          {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+          {product.stock > 0 ? "Available — confirm via quote" : "Inquire for availability"}
         </span>
       </div>
       <div className="flex flex-wrap gap-3">
         <Button
           size="lg"
-          disabled={product.stock <= 0}
           onClick={() => {
             addItem(
               {
@@ -49,21 +47,19 @@ export function AddToCartPanel({
                 name: product.name,
                 slug: product.slug,
                 sku: product.sku,
-                price: product.price,
+                price: 0,
                 image: product.image,
-                stock: product.stock,
+                stock: Math.max(product.stock, qty),
               },
               qty
             );
-            toast.success("Added to cart");
+            toast.success("Added to quote list");
           }}
         >
-          Add to Cart
+          Add to Quote List
         </Button>
         <Button asChild size="lg" variant="secondary">
-          <Link
-            href={`/inquiry?product=${encodeURIComponent(product.name)}`}
-          >
+          <Link href={`/inquiry?product=${encodeURIComponent(product.name)}`}>
             Request Quote
           </Link>
         </Button>

@@ -36,10 +36,10 @@ export default async function HomePage() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <h2 className="display-font text-3xl font-semibold md:text-4xl">
-              Best Sellers
+              Featured Products
             </h2>
             <p className="mt-2 text-[var(--muted)]">
-              High-demand industrial and electronic products ready to order.
+              High-demand industrial and electronic products — request a quote.
             </p>
           </div>
           <Button asChild variant="secondary">
@@ -62,14 +62,14 @@ export default async function HomePage() {
             </h2>
             <p className="mt-3 text-[var(--muted)]">
               Share your BOM or requirements and our team will respond with
-              competitive pricing for B2B and project orders.
+              availability and commercial terms for B2B and project orders.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link href="/inquiry">Submit Inquiry</Link>
+                <Link href="/inquiry">Request a Quote</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/track-order">Track an Order</Link>
+                <Link href="/track-order">Track Quote / Order</Link>
               </Button>
             </div>
           </div>

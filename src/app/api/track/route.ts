@@ -18,9 +18,15 @@ export async function GET(req: NextRequest) {
       ...(orderNumber ? { orderNumber } : {}),
       ...(email ? { customerEmail: email } : {}),
     },
-    include: {
+    select: {
+      id: true,
+      orderNumber: true,
+      status: true,
+      createdAt: true,
+      customerName: true,
+      city: true,
       items: {
-        select: { name: true, sku: true, quantity: true, price: true, total: true },
+        select: { name: true, sku: true, quantity: true },
       },
     },
     orderBy: { createdAt: "desc" },

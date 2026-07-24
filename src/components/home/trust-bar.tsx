@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Award, Clock3, ShieldCheck, Truck } from "lucide-react";
+import { Award, Clock3, MessageSquareQuote, ShieldCheck } from "lucide-react";
 import { COMPANY } from "@/lib/constants";
 
 const items = [
   { icon: ShieldCheck, label: "Quality Assured Supply" },
   { icon: Clock3, label: `${COMPANY.yearsInBusiness}+ Years Trading Experience` },
-  { icon: Truck, label: "Nationwide B2B Delivery Support" },
-  { icon: Award, label: "Competitive Industrial Pricing" },
+  { icon: MessageSquareQuote, label: "Fast Quote Response for B2B & Projects" },
+  { icon: Award, label: "Trusted Industrial Trading Partner" },
 ];
 
 export function TrustBar() {
@@ -24,7 +24,7 @@ export function TrustBar() {
             transition={{ delay: i * 0.08 }}
             className="glass flex items-center gap-3 rounded-2xl border border-[var(--border)] px-4 py-4"
           >
-            <item.icon className="h-5 w-5 text-[var(--accent)]" />
+            <item.icon className="h-5 w-5 shrink-0 text-[var(--accent)]" />
             <p className="text-sm font-medium">{item.label}</p>
           </motion.div>
         ))}
