@@ -740,7 +740,7 @@ Browse [MS Products](/products?category=ms-products) including mild steel sheets
   },
   {
     title: "Industrial Caster Wheels Pakistan: Load Rating & Material Guide",
-    slug: "industrial-caster-wheels-pakistan-guide",
+    slug: "industrial-caster-wheels-load-rating-material-guide",
     excerpt:
       "How to choose heavy duty caster wheels by load rating, wheel material, and swivel vs rigid configuration for carts and racks.",
     content: `Selecting the right industrial caster wheels prevents premature failure on warehouse carts, assembly trolleys, and machinery bases.
