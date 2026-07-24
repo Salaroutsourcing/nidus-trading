@@ -1,7 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { extendedProducts, type ExtendedProduct } from "./catalog-extended";
 
 const prisma = new PrismaClient();
+
+/**
+ * Compose the PDP `description` field from the rich extended-catalog entry.
+ * The product detail page renders `description` with `whitespace-pre-line`,
+ * so Applications and Features & Benefits appear as clean bulleted sections.
+ */
+function buildDescription(p: ExtendedProduct) {
+  const apps = p.applications.map((a) => `• ${a}`).join("\n");
+  const feats = p.features.map((f) => `• ${f}`).join("\n");
+  return [
+    p.longDesc,
+    `Applications:\n${apps}`,
+    `Features & Benefits:\n${feats}`,
+    "Pricing: Price on Request — request a quote for the best price on project and bulk quantities.",
+  ].join("\n\n");
+}
 
 /**
  * Catalog seed for Nidus Trading (inquiry/quote-driven).
@@ -849,6 +866,33 @@ async function main() {
     });
   }
 
+  // Extended B2B catalog (40 detailed, quote-driven SKUs)
+  for (const p of extendedProducts) {
+    const categoryId = categoryMap.get(p.categorySlug);
+    if (!categoryId) continue;
+    const specifications = Object.fromEntries(
+      p.specs.map((s) => [s.name, s.value])
+    );
+    await prisma.product.create({
+      data: {
+        name: p.title,
+        slug: p.slug,
+        description: buildDescription(p),
+        shortDesc: p.shortDesc,
+        sku: p.sku,
+        price: 1, // internal placeholder; prices are never shown publicly
+        stock: p.stock,
+        brand: p.brand,
+        featured: p.featured ?? false,
+        bestSeller: p.bestSeller ?? false,
+        tags: JSON.stringify(p.tags),
+        specifications: JSON.stringify(specifications),
+        images: JSON.stringify([p.image]),
+        categoryId,
+      },
+    });
+  }
+
   for (const post of blogPosts) {
     await prisma.blogPost.create({
       data: {
@@ -894,7 +938,11 @@ async function main() {
   }
 
   console.log("Seed complete.");
-  console.log(`Categories: ${categories.length}, Products: ${products.length}`);
+  console.log(
+    `Categories: ${categories.length}, Products: ${
+      products.length + extendedProducts.length
+    } (base ${products.length} + extended ${extendedProducts.length})`
+  );
   console.log("Admin: admin@nidustrading.com / Admin@Nidus2026");
   console.log("Customer: customer@example.com / Customer@123");
   console.log("Track demo quote: NT-DEMO-1001");
