@@ -1,6 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { extendedProducts, type ExtendedProduct } from "./catalog-extended";
+import {
+  buildImages,
+  baseImageQuery,
+  extendedImageQuery,
+  categoryImageQuery,
+} from "./image-map";
 
 const prisma = new PrismaClient();
 
@@ -845,10 +851,15 @@ async function main() {
     const p = products[i];
     const categoryId = categoryMap.get(p.categorySlug);
     if (!categoryId) continue;
+    const slug = slugFromName(p.name);
+    // Keyword-matched gallery (3 relevant, unique images per product)
+    const query =
+      baseImageQuery[p.name] || categoryImageQuery[p.categorySlug] || "industrial";
+    const images = buildImages(query, slug, 3);
     await prisma.product.create({
       data: {
         name: p.name,
-        slug: slugFromName(p.name),
+        slug,
         description: p.description,
         shortDesc: p.shortDesc,
         sku: skuFromName(p.name, i),
@@ -860,7 +871,7 @@ async function main() {
         bestSeller: p.bestSeller ?? false,
         tags: JSON.stringify(p.tags),
         specifications: JSON.stringify(p.specifications),
-        images: JSON.stringify([p.image]),
+        images: JSON.stringify(images),
         categoryId,
       },
     });
@@ -873,6 +884,10 @@ async function main() {
     const specifications = Object.fromEntries(
       p.specs.map((s) => [s.name, s.value])
     );
+    // Keyword-matched gallery (3 relevant, unique images per product)
+    const query =
+      extendedImageQuery[p.slug] || categoryImageQuery[p.categorySlug] || "industrial";
+    const images = buildImages(query, p.slug, 3);
     await prisma.product.create({
       data: {
         name: p.title,
@@ -887,7 +902,7 @@ async function main() {
         bestSeller: p.bestSeller ?? false,
         tags: JSON.stringify(p.tags),
         specifications: JSON.stringify(specifications),
-        images: JSON.stringify([p.image]),
+        images: JSON.stringify(images),
         categoryId,
       },
     });
