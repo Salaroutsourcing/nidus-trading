@@ -45,6 +45,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
       featured: body.featured,
       bestSeller: body.bestSeller,
       active: body.active,
+      mpn: body.mpn,
+      hsCode: body.hsCode,
+      countryOfOrigin: body.countryOfOrigin,
+      datasheetUrl: body.datasheetUrl,
+      certifications: body.certifications
+        ? JSON.stringify(body.certifications)
+        : undefined,
+      warrantyPeriod: body.warrantyPeriod,
       categoryId: body.categoryId,
     },
   });

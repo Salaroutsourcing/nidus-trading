@@ -5,21 +5,21 @@ import { motion } from "framer-motion";
 const testimonials = [
   {
     quote:
-      "Nidus consistently delivers quality electrical and mechanical parts on schedule for our plant maintenance cycles.",
-    name: "Plant Manager",
-    company: "Textile Manufacturing Co.",
+      "Nidus supplied genuine Moxa switches and Cisco optics with full datasheets and origin docs — our tender submission cleared technical evaluation without a single query.",
+    name: "Procurement Manager",
+    company: "Public-Sector Telecom Project",
   },
   {
     quote:
-      "Their quotation turnaround for bulk electronic components is fast, and terms stay competitive for production volumes.",
-    name: "Procurement Lead",
-    company: "Electronics Assembler",
+      "Fast quotes on Dell PSUs, LTO-8 drives, and rack PDUs kept our data-center refresh on schedule. MPNs matched exactly to our BOQ.",
+    name: "Data Center Lead",
+    company: "Enterprise IT Services",
   },
   {
     quote:
-      "We rely on Nidus for caster wheels, fasteners, and MS products. Reliable partner for industrial procurement.",
-    name: "Operations Director",
-    company: "Logistics Warehouse",
+      "For our substation upgrade they delivered Siemens PLCs, a Fluke power analyzer, and DEHN surge protection — one reliable source for specialized hardware.",
+    name: "Engineering Manager",
+    company: "Power Utility Contractor",
   },
 ];
 
@@ -31,7 +31,7 @@ export function Testimonials() {
           Trusted by industry buyers
         </h2>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Long-term supply relationships across manufacturing, electrical, and logistics.
+          Long-term supply relationships across government, telecom, data centers, and utilities.
         </p>
       </div>
       <div className="grid gap-3 md:grid-cols-3">

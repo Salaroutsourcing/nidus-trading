@@ -9,7 +9,7 @@ import {
 } from "@/components/products/recently-viewed";
 import { Badge } from "@/components/ui/badge";
 import { JsonLd } from "@/components/seo/json-ld";
-import { COMPANY } from "@/lib/constants";
+import { ProductSchema } from "@/components/seo/product-schema";
 import { prisma } from "@/lib/prisma";
 import { parseJsonArray, parseJsonObject } from "@/lib/utils";
 
@@ -52,6 +52,7 @@ export default async function ProductDetailPage({ params }: Props) {
   const images = parseJsonArray(product.images);
   const specs = parseJsonObject(product.specifications);
   const tags = parseJsonArray(product.tags);
+  const certifications = parseJsonArray(product.certifications);
   const gallery =
     images.length > 0
       ? images
@@ -70,30 +71,6 @@ export default async function ProductDetailPage({ params }: Props) {
     include: { category: true },
     take: 6,
   });
-
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    sku: product.sku,
-    brand: product.brand || COMPANY.name,
-    image: image.startsWith("http") ? image : `${appUrl}${image}`,
-    category: product.category.name,
-    offers: {
-      "@type": "Offer",
-      availability:
-        product.stock > 0
-          ? "https://schema.org/InStock"
-          : "https://schema.org/PreOrder",
-      url: `${appUrl}/products/${product.slug}`,
-      seller: {
-        "@type": "Organization",
-        name: COMPANY.name,
-      },
-      description: "Request a quote — pricing provided on inquiry",
-    },
-  };
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -123,7 +100,26 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
-      <JsonLd data={[productSchema, breadcrumbSchema]} />
+      <ProductSchema
+        product={{
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          mpn: product.mpn || product.sku,
+          brand: product.brand || "Nidus Trading",
+          category: product.category.name,
+          description: product.description,
+          hsCode: product.hsCode ?? undefined,
+          countryOfOrigin: product.countryOfOrigin ?? undefined,
+          datasheetUrl: product.datasheetUrl ?? undefined,
+          certifications,
+          warrantyPeriod: product.warrantyPeriod ?? undefined,
+          inStock: product.stock > 0,
+          specifications: specs,
+          imageUrl: image.startsWith("http") ? image : `${appUrl}${image}`,
+        }}
+      />
+      <JsonLd data={breadcrumbSchema} />
       <TrackProductView
         product={{ slug: product.slug, name: product.name, image }}
       />
@@ -182,7 +178,17 @@ export default async function ProductDetailPage({ params }: Props) {
             <h1 className="display-font mt-2 text-3xl font-bold md:text-4xl">
               {product.name}
             </h1>
-            <p className="mt-2 text-sm text-[var(--muted)]">SKU: {product.sku}</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              SKU: {product.sku}
+              {product.mpn ? (
+                <>
+                  {" · "}
+                  <span className="font-semibold text-[var(--foreground)]">
+                    MPN: {product.mpn}
+                  </span>
+                </>
+              ) : null}
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.bestSeller && <Badge tone="warning">Best Seller</Badge>}
               <Badge tone={product.stock > 0 ? "success" : "info"}>
@@ -211,6 +217,68 @@ export default async function ProductDetailPage({ params }: Props) {
                     </div>
                   ))}
               </dl>
+            </div>
+          )}
+
+          {(product.hsCode ||
+            product.countryOfOrigin ||
+            product.warrantyPeriod ||
+            product.datasheetUrl ||
+            certifications.length > 0) && (
+            <div className="rounded-md border border-[var(--border)] bg-[var(--background)] p-4">
+              <h2 className="text-sm font-bold">Procurement & compliance</h2>
+              <dl className="mt-3 space-y-2 text-sm">
+                {product.brand && (
+                  <div className="flex justify-between gap-4 border-b border-[var(--border)] py-1.5">
+                    <dt className="text-[var(--muted)]">Brand</dt>
+                    <dd className="text-right font-medium">{product.brand}</dd>
+                  </div>
+                )}
+                {product.countryOfOrigin && (
+                  <div className="flex justify-between gap-4 border-b border-[var(--border)] py-1.5">
+                    <dt className="text-[var(--muted)]">Country of Origin</dt>
+                    <dd className="text-right font-medium">
+                      {product.countryOfOrigin}
+                    </dd>
+                  </div>
+                )}
+                {product.hsCode && (
+                  <div className="flex justify-between gap-4 border-b border-[var(--border)] py-1.5">
+                    <dt className="text-[var(--muted)]">HS Code (PK Customs)</dt>
+                    <dd className="text-right font-medium">{product.hsCode}</dd>
+                  </div>
+                )}
+                {product.warrantyPeriod && (
+                  <div className="flex justify-between gap-4 border-b border-[var(--border)] py-1.5">
+                    <dt className="text-[var(--muted)]">Warranty</dt>
+                    <dd className="text-right font-medium">
+                      {product.warrantyPeriod}
+                    </dd>
+                  </div>
+                )}
+                {certifications.length > 0 && (
+                  <div className="border-b border-[var(--border)] py-1.5 last:border-0">
+                    <dt className="text-[var(--muted)]">Certifications</dt>
+                    <dd className="mt-1.5 flex flex-wrap gap-1.5">
+                      {certifications.map((cert) => (
+                        <Badge key={cert} tone="success">
+                          {cert}
+                        </Badge>
+                      ))}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              {product.datasheetUrl && (
+                <a
+                  href={product.datasheetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] hover:underline"
+                >
+                  Download datasheet (PDF)
+                </a>
+              )}
             </div>
           )}
 

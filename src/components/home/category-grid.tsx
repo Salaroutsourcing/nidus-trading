@@ -4,27 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
+  BatteryCharging,
   CircleDot,
   Cog,
   Cpu,
+  Gauge,
   Layers,
-  Monitor,
-  Paintbrush,
+  Network,
+  Server,
   Shield,
-  TreePine,
   Wrench,
   Zap,
   type LucideIcon,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
+  Network,
+  Server,
+  Gauge,
   Cpu,
+  BatteryCharging,
   Zap,
-  Monitor,
   Cog,
   Layers,
-  TreePine,
-  Paintbrush,
   Wrench,
   CircleDot,
   Shield,
@@ -48,7 +50,7 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
             Shop by department
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Ten industrial categories — browse and add to your quote list.
+            High-demand industrial departments — browse and add to your quote list.
           </p>
         </div>
         <Link

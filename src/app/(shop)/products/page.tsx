@@ -7,15 +7,16 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Industrial & Electronic Product Catalog Pakistan",
+  title: "Industrial & IT Hardware Catalog Pakistan | Tender & Enterprise Supply",
   description:
-    "Browse electronic components, electrical items, mild steel plates, industrial caster wheels, hardware and safety equipment from Nidus Trading. Request a quote.",
+    "Browse industrial networking, enterprise servers & storage, test & measurement, PLC automation, and backup power hardware from Nidus Trading. Genuine OEM with MPN, HS code & datasheets. Request a quote.",
   keywords: [
-    "industrial caster wheels Pakistan",
-    "electronic components supplier",
-    "mild steel plates Pakistan",
-    "electrical items supplier",
-    "hardware supplier Pakistan",
+    "industrial managed switch Pakistan",
+    "enterprise server storage supplier",
+    "OTDR power quality analyzer Pakistan",
+    "Siemens PLC VFD supplier",
+    "3 phase UPS LiFePO4 Pakistan",
+    "government tender IT hardware",
   ],
 };
 

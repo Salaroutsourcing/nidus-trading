@@ -61,9 +61,12 @@ export default async function HomePage() {
   ]);
 
   const relevantCategories = categories.filter((c) =>
-    ["caster-wheels", "ms-products", "electronic-components", "safety-lifting-equipment"].includes(
-      c.slug
-    )
+    [
+      "industrial-networking-telecom",
+      "enterprise-server-storage",
+      "automation-plc-process-control",
+      "power-quality-backup",
+    ].includes(c.slug)
   );
 
   return (
@@ -80,8 +83,8 @@ export default async function HomePage() {
       />
 
       <ProductRow
-        title="Featured for projects"
-        subtitle="Popular picks for fabrication, electrical, and plant maintenance."
+        title="Featured for tenders & projects"
+        subtitle="Genuine OEM picks for networking, data-center, automation, and backup power."
         href="/products?sort=featured"
         products={featured.map(mapProduct)}
       />
@@ -108,7 +111,7 @@ export default async function HomePage() {
               href="/categories"
               className="rounded-md bg-[var(--steel)] px-3 py-2 text-sm font-semibold text-white"
             >
-              All 10 categories
+              All categories
             </Link>
           </div>
         </section>
@@ -149,7 +152,7 @@ export default async function HomePage() {
               Buying guides
             </h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Spec tips for caster wheels, electronics, and mild steel.
+              Spec tips for networking, storage, test instruments, and backup power.
             </p>
           </div>
           <Button asChild variant="outline" size="sm">
