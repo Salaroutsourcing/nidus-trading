@@ -40,10 +40,10 @@ export function AddToCartPanel({
           id="pdp-qty"
           type="number"
           min={1}
-          max={Math.max(1, product.stock || 999)}
+          inputMode="numeric"
           value={qty}
-          onChange={(e) => setQty(Number(e.target.value))}
-          className="h-10 w-20 rounded-md border border-[var(--border)] bg-[var(--background)] px-3"
+          onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
+          className="h-11 w-20 rounded-md border border-[var(--border)] bg-[var(--background)] px-3"
         />
         <span className="text-xs text-[var(--muted)]">
           {product.stock > 0 ? "Available — confirm via quote" : "Inquire for availability"}
@@ -62,11 +62,11 @@ export function AddToCartPanel({
                 sku: product.sku,
                 price: 0,
                 image: product.image,
-                stock: Math.max(product.stock, qty),
+                stock: product.stock,
               },
               qty
             );
-            toast.success("Added to quote list");
+            toast.success(`Added ${qty} × ${product.sku} to quote list`);
           }}
         >
           Add to Quote List

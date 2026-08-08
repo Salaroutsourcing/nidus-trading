@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 export const metadata = {
   title: "About Us | Industrial Trading Pakistan",
   description: `Learn about ${COMPANY.name} — ${COMPANY.yearsInBusiness}+ years of industrial and electronic supply for B2B and B2C buyers across Pakistan. Quote-first, reliable fulfillment.`,
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -18,24 +19,24 @@ export default function AboutPage() {
       <div className="mt-10 space-y-6 rounded-md border border-[var(--border)] bg-[var(--surface)] p-8 leading-relaxed">
         <p>
           For more than {COMPANY.yearsInBusiness} years, {COMPANY.name} has helped
-          manufacturers, contractors, workshops, warehouses, and procurement teams
-          source industrial and electronic supplies across Pakistan. We operate a
-          quote-first model: you share requirements, we confirm availability and
-          commercial terms — without forcing public list prices that rarely match
-          project volumes.
+          government departments, telecom operators, data-center teams, and enterprise
+          procurement managers source specialized, often import-restricted industrial
+          and IT hardware across Pakistan. We operate a quote-first model: you share
+          requirements and part numbers, we confirm availability and commercial terms —
+          without forcing public list prices that rarely match tender or project volumes.
         </p>
         <p>
-          Our marketplace-style catalog covers ten departments: electronic
-          components, electrical items, IT & computer products, mechanical items,
-          mild steel (MS) products, wooden items, paint items, hardware, industrial
-          caster wheels, and safety & lifting equipment. Whether you need a single
-          SKU for maintenance or a multi-line BOM for a plant upgrade, we coordinate
-          sourcing with quality-conscious suppliers.
+          Our catalog focuses on high-margin, specialized lines: industrial networking &
+          telecommunications, enterprise server, storage & data-center hardware, precision
+          test, measurement & calibration, industrial automation, PLC & process control,
+          and power quality & backup infrastructure. Every SKU carries the MPN, HS code,
+          country of origin, datasheet, certifications, and OEM warranty that tender
+          evaluators require — supplied only as genuine OEM product.
         </p>
         <p>
-          We serve both B2B accounts and B2C buyers. Repeat industrial customers get
-          priority quotation handling; project teams can track quote references after
-          submission. Call{" "}
+          We specialize in government tender and enterprise procurement, and also serve
+          system integrators and OEMs. Repeat and tender customers get priority quotation
+          handling; project teams can track quote references after submission. Call{" "}
           <a href={COMPANY.phoneHref} className="font-semibold text-[var(--accent)]">
             {COMPANY.phone}
           </a>{" "}
@@ -75,7 +76,7 @@ export default function AboutPage() {
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[
           { label: "Years of experience", value: `${COMPANY.yearsInBusiness}+` },
-          { label: "Product categories", value: "10" },
+          { label: "Specialized departments", value: "5" },
           { label: "Support line", value: COMPANY.phone },
         ].map((stat) => (
           <div

@@ -79,6 +79,12 @@ const productSchema = z.object({
   featured: z.boolean().optional(),
   bestSeller: z.boolean().optional(),
   active: z.boolean().optional(),
+  mpn: z.string().optional().nullable(),
+  hsCode: z.string().optional().nullable(),
+  countryOfOrigin: z.string().optional().nullable(),
+  datasheetUrl: z.string().url().optional().nullable(),
+  certifications: z.array(z.string()).default([]),
+  warrantyPeriod: z.string().optional().nullable(),
   categoryId: z.string(),
 });
 
@@ -112,6 +118,12 @@ export async function POST(req: NextRequest) {
       featured: data.featured ?? false,
       bestSeller: data.bestSeller ?? false,
       active: data.active ?? true,
+      mpn: data.mpn,
+      hsCode: data.hsCode,
+      countryOfOrigin: data.countryOfOrigin,
+      datasheetUrl: data.datasheetUrl,
+      certifications: JSON.stringify(data.certifications),
+      warrantyPeriod: data.warrantyPeriod,
       categoryId: data.categoryId,
     },
   });

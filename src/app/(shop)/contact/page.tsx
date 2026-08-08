@@ -6,6 +6,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Contact Industrial Supply Team",
   description: `Contact ${COMPANY.name} at ${COMPANY.phone} for quotations, bulk pricing, and project support across Pakistan.`,
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

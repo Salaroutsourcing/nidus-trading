@@ -6,7 +6,8 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Insights & News",
   description:
-    "Industry guides and company updates from Nidus Trading — caster wheels, electronic components, mild steel and more.",
+    "Procurement guides from Nidus Trading — industrial networking, enterprise storage, fiber OTDR testing, PLC automation, and backup power for tenders and enterprise.",
+  alternates: { canonical: "/blog" },
 };
 
 export default async function BlogPage() {

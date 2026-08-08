@@ -8,9 +8,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "images.pexels.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
-      // Keyword-matched product photos (fetched by product type)
-      { protocol: "https", hostname: "loremflickr.com" },
-      { protocol: "https", hostname: "*.staticflickr.com" },
     ],
   },
 };

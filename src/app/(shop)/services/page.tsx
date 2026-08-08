@@ -3,30 +3,31 @@ import { Button } from "@/components/ui/button";
 import { COMPANY } from "@/lib/constants";
 
 export const metadata = {
-  title: "Industrial Procurement & Quotation Services",
+  title: "Tender & Enterprise Procurement Services",
   description:
-    "Procurement support, bulk quotations, project supply, and industrial sourcing services by Nidus Trading across Pakistan.",
+    "Government tender supply, enterprise quotations, import sourcing, and compliance documentation for specialized industrial & IT hardware by Nidus Trading across Pakistan.",
+  alternates: { canonical: "/services" },
 };
 
 const services = [
   {
-    title: "Industrial procurement",
-    desc: "Source electrical, electronic, mechanical, MS, hardware, caster wheels, and safety items with consistent quality controls and SKU matching.",
+    title: "Government tender supply",
+    desc: "Genuine OEM hardware with MPNs, HS codes, country-of-origin, datasheets, and certifications compiled into tender-ready submission packs.",
     href: "/products",
   },
   {
-    title: "Bulk & project quotations",
-    desc: "Fast turnaround on BOMs and multi-category project requirements for contractors, fabricators, and plant maintenance teams.",
+    title: "Enterprise & project quotations",
+    desc: "Fast turnaround on BOQs for networking, data-center, automation, and backup-power projects — part-number matched with lead times.",
     href: "/inquiry",
   },
   {
-    title: "B2B account support",
-    desc: "Dedicated coordination for repeat buyers, warehouses, and workshops — including quote tracking and order status updates.",
+    title: "Import & sourcing support",
+    desc: "Sourcing of specialized and import-restricted IT and industrial hardware with origin documentation and compliance guidance.",
     href: "/track-order",
   },
   {
-    title: "Spec & availability guidance",
-    desc: "Help confirming grades, sizes, load ratings, and alternatives when OEM parts are constrained — before you commit volume.",
+    title: "Spec & alternatives guidance",
+    desc: "Help confirming part numbers, ratings, and OEM-equivalent alternatives when items are constrained — before you commit volume.",
     href: "/contact",
   },
 ];

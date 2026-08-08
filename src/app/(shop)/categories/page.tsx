@@ -5,9 +5,10 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Industrial Product Categories & Departments",
+  title: "Industrial & IT Hardware Categories & Departments",
   description:
-    "Browse all 10 Nidus Trading departments: electronics, electrical, IT, mechanical, mild steel, wood, paint, hardware, caster wheels, and safety equipment.",
+    "Browse Nidus Trading departments: industrial networking & telecom, enterprise server & storage, test & measurement, PLC automation & process control, and power quality & backup infrastructure.",
+  alternates: { canonical: "/categories" },
 };
 
 export default async function CategoriesPage() {
@@ -20,9 +21,9 @@ export default async function CategoriesPage() {
       <div className="mx-auto max-w-7xl px-4 pt-10 md:px-6">
         <h1 className="display-font text-4xl font-bold">All departments</h1>
         <p className="mt-2 max-w-2xl text-[var(--muted)]">
-          Ten industrial categories for B2B and B2C buyers. Open a department to
-          filter the catalog, compare related SKUs via inquiry, and add items to
-          your quote list.
+          Five specialized, high-margin departments for government tender suppliers and
+          enterprise procurement teams. Open a department to filter the catalog, compare
+          MPNs and specs via inquiry, and add items to your quote list.
         </p>
         <p className="mt-3 text-sm text-[var(--muted)]">
           Looking for something specific?{" "}

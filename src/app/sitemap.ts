@@ -1,17 +1,17 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const base = SITE_URL;
 
   let products: { slug: string; updatedAt: Date }[] = [];
   let posts: { slug: string; updatedAt: Date }[] = [];
-  let categories: { slug: string; updatedAt: Date }[] = [];
 
   try {
-    [products, posts, categories] = await Promise.all([
+    [products, posts] = await Promise.all([
       prisma.product.findMany({
         where: { active: true },
         select: { slug: true, updatedAt: true },
@@ -20,7 +20,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         where: { published: true },
         select: { slug: true, updatedAt: true },
       }),
-      prisma.category.findMany({ select: { slug: true, updatedAt: true } }),
     ]);
   } catch {
     // Build/preview without a valid DATABASE_URL still emits static routes
@@ -55,12 +54,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}/blog/${p.slug}`,
       lastModified: p.updatedAt,
       changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...categories.map((c) => ({
-      url: `${base}/products?category=${c.slug}`,
-      lastModified: c.updatedAt,
-      changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
   ];

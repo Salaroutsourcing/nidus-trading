@@ -16,6 +16,14 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: post.metaTitle || post.title,
     description: post.metaDesc || post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title: post.metaTitle || post.title,
+      description: post.metaDesc || post.excerpt,
+      type: "article",
+      url: `/blog/${post.slug}`,
+      images: post.coverImage ? [post.coverImage] : undefined,
+    },
   };
 }
 

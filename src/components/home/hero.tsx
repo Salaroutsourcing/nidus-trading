@@ -30,11 +30,12 @@ export function Hero() {
               {COMPANY.name}
             </p>
             <h1 className="display-font mt-3 text-4xl font-bold leading-tight md:text-5xl">
-              Industrial supply marketplace — quote in minutes
+              Tender-ready industrial & IT hardware — quote in minutes
             </h1>
             <p className="mt-4 max-w-xl text-base text-white/80 md:text-lg">
-              Electronic, electrical, mild steel, caster wheels, hardware & safety
-              equipment for B2B and B2C buyers across Pakistan.
+              Industrial networking, enterprise servers & storage, test & measurement,
+              PLC automation, and backup power — genuine OEM, with datasheets, HS codes
+              and origin docs for government tenders and enterprise procurement across Pakistan.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button asChild size="lg">

@@ -5,6 +5,7 @@ export const metadata = {
   title: "Request a Quote",
   description:
     "Submit bulk and custom order inquiries to Nidus Trading for industrial and electronic supply quotations across Pakistan.",
+  alternates: { canonical: "/inquiry" },
 };
 
 export default function InquiryPage() {
