@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ClipboardList,
   Menu,
@@ -11,7 +11,7 @@ import {
   User,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { COMPANY, NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
@@ -20,12 +20,18 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 type Category = { id: string; name: string; slug: string };
 
-export function Header({ categories = [] }: { categories?: Category[] }) {
+function HeaderInner({ categories = [] }: { categories?: Category[] }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const totalItems = useCart((s) => s.totalItems());
+  // The quote-list count comes from persisted client storage, so it is only
+  // rendered once rehydrated, keeping server and client markup identical.
+  const cartReady = useCart((s) => s.hydrated);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
+
+  const activeCategory = searchParams.get("category");
 
   useEffect(() => {
     setOpen(false);
@@ -109,15 +115,27 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
           </form>
 
           <div className="ml-auto flex items-center gap-1 md:gap-2">
-            <Button asChild variant="ghost" size="icon" className="md:hidden">
-              <Link href="/products" aria-label="Search products">
-                <Search className="h-4 w-4" />
-              </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              aria-label="Search products"
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <Search className="h-4 w-4" />
             </Button>
             <Button asChild variant="ghost" size="icon" className="relative">
-              <Link href="/cart" aria-label="Quote list">
+              <Link
+                href="/cart"
+                aria-label={
+                  cartReady && totalItems > 0
+                    ? `Quote list, ${totalItems} item${totalItems === 1 ? "" : "s"}`
+                    : "Quote list"
+                }
+              >
                 <ClipboardList className="h-5 w-5" />
-                {totalItems > 0 && (
+                {cartReady && totalItems > 0 && (
                   <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-bold text-[#131921]">
                     {totalItems}
                   </span>
@@ -175,7 +193,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
                 href={`/products?category=${c.slug}`}
                 className={cn(
                   "shrink-0 whitespace-nowrap rounded px-2.5 py-1 text-xs font-medium text-white/85 transition hover:bg-white/10 hover:text-white",
-                  pathname.includes(c.slug) && "bg-white/15 text-white"
+                  activeCategory === c.slug && "bg-white/15 text-white"
                 )}
               >
                 {c.name}
@@ -191,12 +209,12 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search products..."
-              className="h-10 flex-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-3 text-sm"
+              placeholder="Search products, SKU, MPN..."
+              aria-label="Search products"
+              autoFocus
+              className="h-11 flex-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-3 text-sm"
             />
-            <Button type="submit" size="sm">
-              Go
-            </Button>
+            <Button type="submit">Go</Button>
           </form>
           <div className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
@@ -218,5 +236,13 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
         </div>
       )}
     </header>
+  );
+}
+
+export function Header({ categories = [] }: { categories?: Category[] }) {
+  return (
+    <Suspense fallback={<div className="h-[104px] bg-[var(--surface)]" />}>
+      <HeaderInner categories={categories} />
+    </Suspense>
   );
 }

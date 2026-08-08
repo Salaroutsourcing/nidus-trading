@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { COMPANY } from "@/lib/constants";
 
 export function InquiryForm() {
   const searchParams = useSearchParams();
@@ -24,11 +25,18 @@ export function InquiryForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Unable to submit inquiry");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          typeof data.error === "string" ? data.error : "Unable to submit inquiry"
+        );
+      }
       setDone(true);
       toast.success("Inquiry submitted successfully");
-    } catch {
-      toast.error("Failed to submit inquiry");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to submit inquiry"
+      );
     } finally {
       setLoading(false);
     }
@@ -48,7 +56,7 @@ export function InquiryForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="glass mt-8 space-y-4 rounded-2xl border border-[var(--border)] p-6"
+      className="glass relative mt-8 space-y-4 rounded-2xl border border-[var(--border)] p-6"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <Input name="name" placeholder="Full name *" required />
@@ -72,10 +80,22 @@ export function InquiryForm() {
         name="message"
         placeholder="Describe your requirements, BOM, or delivery timeline *"
         required
+        minLength={10}
       />
+
+      {/* Honeypot: hidden from users, commonly auto-filled by bots. */}
+      <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" tabIndex={-1} autoComplete="off" />
+      </div>
+
       <Button type="submit" size="lg" disabled={loading}>
         {loading ? "Submitting..." : "Submit Inquiry"}
       </Button>
+      <p className="text-xs text-[var(--muted)]">
+        Most quotes are reviewed within one business day. Urgent tender deadline?
+        Call {COMPANY.phone}.
+      </p>
     </form>
   );
 }

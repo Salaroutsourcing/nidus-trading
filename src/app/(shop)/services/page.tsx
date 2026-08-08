@@ -6,6 +6,7 @@ export const metadata = {
   title: "Tender & Enterprise Procurement Services",
   description:
     "Government tender supply, enterprise quotations, import sourcing, and compliance documentation for specialized industrial & IT hardware by Nidus Trading across Pakistan.",
+  alternates: { canonical: "/services" },
 };
 
 const services = [

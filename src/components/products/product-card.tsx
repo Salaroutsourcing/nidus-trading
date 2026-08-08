@@ -78,7 +78,6 @@ export function ProductCard({ product, compact }: ProductCardProps) {
           <Button
             size="sm"
             className="w-full"
-            disabled={product.stock <= 0}
             onClick={() => {
               addItem({
                 productId: product.id,

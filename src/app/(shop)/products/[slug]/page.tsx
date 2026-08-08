@@ -33,9 +33,12 @@ export async function generateMetadata({ params }: Props) {
     title,
     description,
     keywords: parseJsonArray(product.tags),
+    alternates: { canonical: `/products/${product.slug}` },
     openGraph: {
       title,
       description,
+      type: "website",
+      url: `/products/${product.slug}`,
       images: images[0] ? [images[0]] : undefined,
     },
   };

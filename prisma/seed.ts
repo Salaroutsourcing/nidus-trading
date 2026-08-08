@@ -135,33 +135,44 @@ async function main() {
   await prisma.account.deleteMany();
   await prisma.user.deleteMany();
 
-  const adminPassword = await bcrypt.hash(
-    process.env.ADMIN_PASSWORD || "Admin@Nidus2026",
-    10
-  );
-  const customerPassword = await bcrypt.hash("Customer@123", 10);
+  // Demo customer + sample order are local-development conveniences. Never
+  // create them on a public site: the password is published in this file.
+  const withDemoData = process.env.SEED_DEMO === "true";
+
+  const rawAdminPassword = process.env.ADMIN_PASSWORD;
+  if (!rawAdminPassword) {
+    throw new Error(
+      "ADMIN_PASSWORD is required to seed. Re-run with ADMIN_PASSWORD='<strong password>'."
+    );
+  }
+
+  const adminEmail = (
+    process.env.ADMIN_EMAIL || "admin@nidustrading.com"
+  ).toLowerCase();
 
   await prisma.user.create({
     data: {
       name: "Nidus Admin",
-      email: (process.env.ADMIN_EMAIL || "admin@nidustrading.com").toLowerCase(),
-      password: adminPassword,
+      email: adminEmail,
+      password: await bcrypt.hash(rawAdminPassword, 10),
       role: "ADMIN",
       phone: "0349-0307920",
       company: "Nidus Trading",
     },
   });
 
-  await prisma.user.create({
-    data: {
-      name: "Demo Customer",
-      email: "customer@example.com",
-      password: customerPassword,
-      role: "CUSTOMER",
-      phone: "0300-0000000",
-      company: "Demo Industries",
-    },
-  });
+  if (withDemoData) {
+    await prisma.user.create({
+      data: {
+        name: "Demo Customer",
+        email: "customer@example.com",
+        password: await bcrypt.hash("Customer@123", 10),
+        role: "CUSTOMER",
+        phone: "0300-0000000",
+        company: "Demo Industries",
+      },
+    });
+  }
 
   const categoryMap = new Map<string, string>();
   for (const cat of b2bCategories) {
@@ -216,7 +227,9 @@ async function main() {
     });
   }
 
-  const sampleProducts = await prisma.product.findMany({ take: 2 });
+  const sampleProducts = withDemoData
+    ? await prisma.product.findMany({ take: 2 })
+    : [];
   if (sampleProducts.length) {
     await prisma.order.create({
       data: {
@@ -252,9 +265,11 @@ async function main() {
   console.log(
     `Categories: ${b2bCategories.length}, Products: ${b2bProducts.length} (B2B high-margin focus)`
   );
-  console.log("Admin: admin@nidustrading.com / Admin@Nidus2026");
-  console.log("Customer: customer@example.com / Customer@123");
-  console.log("Track demo quote: NT-DEMO-1001");
+  console.log(`Admin: ${adminEmail} (password from ADMIN_PASSWORD)`);
+  if (withDemoData) {
+    console.log("Demo customer: customer@example.com / Customer@123");
+    console.log("Track demo quote: NT-DEMO-1001");
+  }
 }
 
 main()

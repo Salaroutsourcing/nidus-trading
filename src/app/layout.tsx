@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Outfit } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { JsonLd } from "@/components/seo/json-ld";
-import { COMPANY } from "@/lib/constants";
+import { COMPANY, FAQ_ITEMS, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 
 const sans = Manrope({
@@ -16,7 +16,7 @@ const display = Outfit({
   weight: ["500", "600", "700", "800"],
 });
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const appUrl = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -44,22 +44,11 @@ export const metadata: Metadata = {
     siteName: COMPANY.name,
     type: "website",
     locale: "en_PK",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1200&q=80",
-        width: 1200,
-        height: 630,
-        alt: "Nidus Trading industrial supply",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${COMPANY.name} | Industrial & Electronic Solutions`,
     description: COMPANY.tagline,
-  },
-  alternates: {
-    canonical: appUrl,
   },
 };
 
@@ -74,7 +63,7 @@ export default function RootLayout({
     name: COMPANY.name,
     alternateName: "NT Industrial Marketplace",
     url: appUrl,
-    logo: `${appUrl}/logo.png`,
+    logo: `${appUrl}/icon.svg`,
     email: COMPANY.email,
     description: COMPANY.tagline,
     areaServed: "Pakistan",
@@ -94,10 +83,35 @@ export default function RootLayout({
     ],
   };
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: COMPANY.name,
+    url: appUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${appUrl}/products?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${display.variable} min-h-screen antialiased`}>
-        <JsonLd data={orgSchema} />
+        <JsonLd data={[orgSchema, websiteSchema, faqSchema]} />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -20,9 +20,9 @@ export default async function AdminLayout({
 
   void isLogin;
   return (
-    <div className="flex min-h-screen bg-[var(--background)]">
+    <div className="flex min-h-screen flex-col bg-[var(--background)] lg:flex-row">
       <AdminSidebar />
-      <div className="flex-1 overflow-auto p-4 md:p-8">{children}</div>
+      <div className="min-w-0 flex-1 overflow-auto p-4 md:p-8">{children}</div>
     </div>
   );
 }

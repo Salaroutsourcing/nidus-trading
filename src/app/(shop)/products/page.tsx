@@ -18,6 +18,7 @@ export const metadata = {
     "3 phase UPS LiFePO4 Pakistan",
     "government tender IT hardware",
   ],
+  alternates: { canonical: "/products" },
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;

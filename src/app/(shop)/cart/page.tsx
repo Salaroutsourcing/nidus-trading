@@ -3,10 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/store/cart";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, totalItems } = useCart();
+  const { items, updateQuantity, removeItem, totalItems, hydrated } = useCart();
+
+  if (!hydrated) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+        <h1 className="display-font text-4xl font-bold">Quote List</h1>
+        <div className="mt-8 space-y-3">
+          <Skeleton className="h-28" />
+          <Skeleton className="h-28" />
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -74,12 +87,12 @@ export default function CartPage() {
                   id={`qty-${item.productId}`}
                   type="number"
                   min={1}
-                  max={item.stock}
+                  inputMode="numeric"
                   value={item.quantity}
                   onChange={(e) =>
                     updateQuantity(item.productId, Number(e.target.value))
                   }
-                  className="h-10 w-20 rounded-md border border-[var(--border)] bg-[var(--background)] px-2"
+                  className="h-11 w-20 rounded-md border border-[var(--border)] bg-[var(--background)] px-2"
                 />
                 <Button variant="ghost" onClick={() => removeItem(item.productId)}>
                   Remove

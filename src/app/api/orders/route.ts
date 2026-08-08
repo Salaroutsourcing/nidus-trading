@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { generateOrderNumber } from "@/lib/utils";
+import { clientKey, rateLimit } from "@/lib/rate-limit";
+import { notifyNewQuoteRequest } from "@/lib/notify";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -36,10 +38,26 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const limit = rateLimit(clientKey(req, "order"), {
+    limit: 5,
+    windowMs: 10 * 60 * 1000,
+  });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many quote requests from this connection. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
+  const body = await req.json().catch(() => null);
+  if (!body) {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
+
   const parsed = orderSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    const first = parsed.error.issues[0]?.message || "Please check the form fields.";
+    return NextResponse.json({ error: first }, { status: 400 });
   }
 
   const session = await auth();
@@ -114,6 +132,18 @@ export async function POST(req: NextRequest) {
       });
 
       return created;
+    });
+
+    await notifyNewQuoteRequest({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      company: order.company,
+      city: order.city,
+      shippingAddress: order.shippingAddress,
+      notes: order.notes,
+      itemSummary,
     });
 
     return NextResponse.json(order, { status: 201 });

@@ -1,3 +1,11 @@
+/**
+ * Canonical origin for the site. Every absolute URL (metadata, JSON-LD,
+ * sitemap, robots) must derive from this so a domain change is a one-line edit.
+ */
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_APP_URL || "https://nidustrading.com"
+).replace(/\/$/, "");
+
 export const COMPANY = {
   name: "Nidus Trading",
   tagline:

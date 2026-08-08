@@ -1,8 +1,7 @@
 import type { Product } from "@/types/product";
-import { COMPANY } from "@/lib/constants";
+import { COMPANY, SITE_URL } from "@/lib/constants";
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://nidus-trading.vercel.app";
+const APP_URL = SITE_URL;
 
 /**
  * schema.org Product JSON-LD tuned for B2B / government-tender procurement.
@@ -58,10 +57,9 @@ export function ProductSchema({ product }: { product: Product }) {
       "@type": "Offer",
       url: `${APP_URL}/products/${product.slug}`,
       priceCurrency: "PKR",
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        description: "Quote Basis for Enterprise & Govt Tenders",
-      },
+      // Quote-first catalog: schema.org requires a numeric price, and 0 is the
+      // documented convention for "contact for pricing" offers.
+      price: 0,
       itemCondition: "https://schema.org/NewCondition",
       availability: product.inStock
         ? "https://schema.org/InStock"

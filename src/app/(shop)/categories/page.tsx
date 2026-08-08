@@ -8,6 +8,7 @@ export const metadata = {
   title: "Industrial & IT Hardware Categories & Departments",
   description:
     "Browse Nidus Trading departments: industrial networking & telecom, enterprise server & storage, test & measurement, PLC automation & process control, and power quality & backup infrastructure.",
+  alternates: { canonical: "/categories" },
 };
 
 export default async function CategoriesPage() {

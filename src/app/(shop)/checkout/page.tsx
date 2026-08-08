@@ -11,8 +11,17 @@ import { useCart } from "@/store/cart";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart, totalItems } = useCart();
+  const { items, clearCart, totalItems, hydrated } = useCart();
   const [loading, setLoading] = useState(false);
+
+  if (!hydrated) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <h1 className="display-font text-4xl font-semibold">Submit Quote Request</h1>
+        <p className="mt-3 text-[var(--muted)]">Loading your quote list...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -54,7 +63,9 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error(data.error || "Quote request failed");
       clearCart();
       toast.success(`Quote request submitted: ${data.orderNumber}`);
-      router.push(`/track-order?orderNumber=${data.orderNumber}`);
+      router.push(
+        `/track-order?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(payload.customerEmail)}`
+      );
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Quote request failed");
     } finally {

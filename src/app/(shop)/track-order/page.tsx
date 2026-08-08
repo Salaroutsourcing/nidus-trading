@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { COMPANY } from "@/lib/constants";
 
 type TrackedOrder = {
   id: string;
@@ -31,28 +32,46 @@ function TrackOrderForm() {
   const [error, setError] = useState("");
 
   async function track(orderNumber?: string, email?: string) {
-    setLoading(true);
-    setError("");
-    const params = new URLSearchParams();
-    if (orderNumber) params.set("orderNumber", orderNumber);
-    if (email) params.set("email", email);
-    const res = await fetch(`/api/track?${params.toString()}`);
-    const data = await res.json();
-    setLoading(false);
-    if (!res.ok) {
-      setError(data.error || "Unable to track request");
+    if (!orderNumber?.trim() || !email?.trim()) {
       setOrders([]);
+      setError("Enter both your quote reference and the email used on the request.");
       return;
     }
-    setOrders(data.orders || []);
-    if (!data.orders?.length) setError("No quote requests found");
+    setLoading(true);
+    setError("");
+    const params = new URLSearchParams({
+      orderNumber: orderNumber.trim(),
+      email: email.trim(),
+    });
+    try {
+      const res = await fetch(`/api/track?${params.toString()}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Unable to track request");
+        setOrders([]);
+        return;
+      }
+      setOrders(data.orders || []);
+      if (!data.orders?.length) {
+        setError(
+          "No quote request matches that reference and email. Check both, or call us on " +
+            COMPANY.phone +
+            "."
+        );
+      }
+    } catch {
+      setError("Network error — please try again.");
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     const orderNumber = searchParams.get("orderNumber");
     const email = searchParams.get("email");
-    if (orderNumber || email) {
-      void track(orderNumber || undefined, email || undefined);
+    if (orderNumber && email) {
+      void track(orderNumber, email);
     }
   }, [searchParams]);
 
@@ -78,13 +97,15 @@ function TrackOrderForm() {
       >
         <Input
           name="orderNumber"
-          placeholder="Reference (e.g. NT-DEMO-1001)"
+          placeholder="Reference (e.g. NT-260801-1234) *"
+          required
           defaultValue={searchParams.get("orderNumber") || ""}
         />
         <Input
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="Email used on the request *"
+          required
           defaultValue={searchParams.get("email") || ""}
         />
         <Button type="submit" disabled={loading}>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 export const metadata = {
   title: "About Us | Industrial Trading Pakistan",
   description: `Learn about ${COMPANY.name} — ${COMPANY.yearsInBusiness}+ years of industrial and electronic supply for B2B and B2C buyers across Pakistan. Quote-first, reliable fulfillment.`,
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
