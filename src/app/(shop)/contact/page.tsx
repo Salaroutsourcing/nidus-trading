@@ -1,11 +1,11 @@
-import { Mail, Phone, MessageCircle, Clock } from "lucide-react";
+import { Mail, Phone, MessageCircle, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { COMPANY } from "@/lib/constants";
 import Link from "next/link";
 
 export const metadata = {
   title: "Contact Industrial Supply Team",
-  description: `Contact ${COMPANY.name} at ${COMPANY.phone} for quotations, bulk pricing, and project support across Pakistan.`,
+  description: `Contact ${COMPANY.name} at ${COMPANY.phone}. Office: ${COMPANY.address}. Quotations, bulk pricing, and project support.`,
   alternates: { canonical: "/contact" },
 };
 
@@ -50,6 +50,13 @@ export default function ContactPage() {
           <p className="mt-4 font-bold">Response window</p>
           <p className="mt-1 text-sm text-[var(--muted)]">
             Most quotes reviewed within one business day. Flag urgency in notes or call.
+          </p>
+        </div>
+        <div className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-6 md:col-span-2">
+          <MapPin className="h-5 w-5 text-[var(--accent)]" />
+          <p className="mt-4 font-bold">Office address</p>
+          <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
+            {COMPANY.address}
           </p>
         </div>
       </div>

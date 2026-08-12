@@ -68,6 +68,14 @@ export default function RootLayout({
     email: COMPANY.email,
     description: COMPANY.tagline,
     areaServed: "Pakistan",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress:
+        "Office No. 10, First Floor, Al-Falah Askaria Plaza, Committee Chowk",
+      addressLocality: COMPANY.city,
+      addressRegion: COMPANY.region,
+      addressCountry: COMPANY.countryCode,
+    },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+92-349-0307920",

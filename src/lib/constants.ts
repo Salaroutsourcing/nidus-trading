@@ -16,12 +16,29 @@ export const COMPANY = {
   phone: "0349-0307920",
   phoneHref: "tel:+923490307920",
   email: "info@nidustrading.com",
-  address: "Pakistan",
+  address:
+    "Office No. 10, First Floor, Al-Falah Askaria Plaza, Committee Chowk, Rawalpindi, Pakistan",
+  addressShort: "Committee Chowk, Rawalpindi, Pakistan",
+  city: "Rawalpindi",
+  region: "Punjab",
+  postalCode: "",
+  country: "Pakistan",
+  countryCode: "PK",
   whatsapp: "https://wa.me/923490307920",
   yearsInBusiness: 10,
   trustLine:
     "Tender-ready B2B supply · Genuine OEM · Datasheets & origin docs · Fast quote response",
 };
+
+export const LEGAL_LINKS = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/shipping", label: "Shipping Policy" },
+  { href: "/refund", label: "Refund Policy" },
+] as const;
+
+/** localStorage key for analytics cookie consent. */
+export const COOKIE_CONSENT_KEY = "nidus_cookie_consent";
 
 export const ORDER_STATUSES = [
   "PENDING",
