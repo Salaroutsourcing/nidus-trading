@@ -6,6 +6,9 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_APP_URL || "https://nidustrading.com"
 ).replace(/\/$/, "");
 
+/** Google Analytics 4 measurement ID (gtag.js). */
+export const GA_MEASUREMENT_ID = "G-W77VH892JH";
+
 export const COMPANY = {
   name: "Nidus Trading",
   tagline:

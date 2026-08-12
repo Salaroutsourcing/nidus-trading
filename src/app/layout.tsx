@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Outfit } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { GoogleAnalytics } from "@/components/seo/google-analytics";
 import { JsonLd } from "@/components/seo/json-ld";
 import { COMPANY, FAQ_ITEMS, SITE_URL } from "@/lib/constants";
 import "./globals.css";
@@ -111,6 +112,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${display.variable} min-h-screen antialiased`}>
+        <GoogleAnalytics />
         <JsonLd data={[orgSchema, websiteSchema, faqSchema]} />
         <Providers>{children}</Providers>
       </body>
