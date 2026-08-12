@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { COMPANY, NAV_LINKS } from "@/lib/constants";
+import { COMPANY, LEGAL_LINKS, NAV_LINKS } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -77,15 +77,28 @@ export function Footer() {
               <Mail className="h-4 w-4 text-[var(--accent)]" />
               <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
             </li>
-            <li className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-[var(--accent)]" />
+            <li className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
               <span>{COMPANY.address}</span>
             </li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-xs text-white/55">
-        © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
+      <div className="border-t border-white/10 py-5">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-center text-xs text-white/55 md:flex-row md:px-6 md:text-left">
+          <p>
+            © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
+          </p>
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1">
+            {LEGAL_LINKS.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-[var(--accent)]">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </footer>
   );

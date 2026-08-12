@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Outfit } from "next/font/google";
 import { Providers } from "@/components/providers";
-import { GoogleAnalytics } from "@/components/seo/google-analytics";
+import { CookieConsent } from "@/components/seo/cookie-consent";
 import { JsonLd } from "@/components/seo/json-ld";
 import { COMPANY, FAQ_ITEMS, SITE_URL } from "@/lib/constants";
 import "./globals.css";
@@ -68,6 +68,14 @@ export default function RootLayout({
     email: COMPANY.email,
     description: COMPANY.tagline,
     areaServed: "Pakistan",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress:
+        "Office No. 10, First Floor, Al-Falah Askaria Plaza, Committee Chowk",
+      addressLocality: COMPANY.city,
+      addressRegion: COMPANY.region,
+      addressCountry: COMPANY.countryCode,
+    },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+92-349-0307920",
@@ -112,7 +120,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${sans.variable} ${display.variable} min-h-screen antialiased`}>
-        <GoogleAnalytics />
+        <CookieConsent />
         <JsonLd data={[orgSchema, websiteSchema, faqSchema]} />
         <Providers>{children}</Providers>
       </body>
