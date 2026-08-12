@@ -1,29 +1,25 @@
+import Script from "next/script";
 import { GA_MEASUREMENT_ID } from "@/lib/constants";
 
 /**
- * GA4 gtag snippet rendered as real <script> tags in <head> so the
- * measurement ID is present in the initial HTML (Google's installer /
- * Tag Assistant look for that, and next/script afterInteractive often
- * is not visible to those crawlers).
+ * GA4 snippet. beforeInteractive injects into the server-rendered HTML
+ * (required for Google's "verify installation" crawler on www).
  */
 export function GoogleAnalytics() {
   return (
     <>
-      <script
-        async
+      <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="beforeInteractive"
       />
-      <script
-        id="google-analytics"
-        dangerouslySetInnerHTML={{
-          __html: `
+      <Script id="google-analytics" strategy="beforeInteractive">
+        {`
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${GA_MEASUREMENT_ID}');
-`.trim(),
-        }}
-      />
+`}
+      </Script>
     </>
   );
 }

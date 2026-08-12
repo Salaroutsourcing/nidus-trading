@@ -111,10 +111,8 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <GoogleAnalytics />
-      </head>
       <body className={`${sans.variable} ${display.variable} min-h-screen antialiased`}>
+        <GoogleAnalytics />
         <JsonLd data={[orgSchema, websiteSchema, faqSchema]} />
         <Providers>{children}</Providers>
       </body>
