@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { COMPANY, NAV_LINKS } from "@/lib/constants";
+import { COMPANY, LEGAL_LINKS, NAV_LINKS } from "@/lib/constants";
 
 export function Footer() {
   return (
