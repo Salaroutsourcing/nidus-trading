@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { prisma } from "@/lib/prisma";
+import { workshopCategory } from "@/lib/workshop-tools";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +13,12 @@ export const metadata = {
 };
 
 export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
+  const stored = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
   });
+  const categories = stored.some((item) => item.slug === "workshop-hand-tools")
+    ? stored
+    : [...stored, workshopCategory()];
 
   return (
     <div className="pb-10">

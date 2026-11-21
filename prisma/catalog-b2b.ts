@@ -54,6 +54,8 @@ export type B2BProduct = {
   metaTitle: string;
   metaDesc: string;
   image: string;
+  /** When set, seed uses these photos instead of the shared gallery map. */
+  images?: string[];
 };
 
 /**

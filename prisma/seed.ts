@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { b2bCategories, b2bProducts, buildB2BDescription } from "./catalog-b2b";
 import { resolveGallery } from "./image-map";
+import { toolsCategory, toolsProducts } from "./tools-list";
 
 const prisma = new PrismaClient();
 
@@ -175,20 +176,22 @@ async function main() {
   }
 
   const categoryMap = new Map<string, string>();
-  for (const cat of b2bCategories) {
+  for (const cat of [...b2bCategories, toolsCategory]) {
     const { subcategories: _subcategories, ...categoryData } = cat;
     void _subcategories;
     const created = await prisma.category.create({ data: categoryData });
     categoryMap.set(cat.slug, created.id);
   }
 
-  for (const p of b2bProducts) {
+  for (const p of [...b2bProducts, ...toolsProducts]) {
     const categoryId = categoryMap.get(p.categorySlug);
     if (!categoryId) continue;
     const specifications = Object.fromEntries(
       p.specs.map((s) => [s.name, s.value])
     );
-    const images = resolveGallery(p.slug, p.categorySlug);
+    const images = p.images?.length
+      ? p.images
+      : resolveGallery(p.slug, p.categorySlug);
     await prisma.product.create({
       data: {
         name: p.title,
@@ -263,7 +266,7 @@ async function main() {
 
   console.log("Seed complete.");
   console.log(
-    `Categories: ${b2bCategories.length}, Products: ${b2bProducts.length} (B2B high-margin focus)`
+    `Categories: ${b2bCategories.length + 1}, Products: ${b2bProducts.length + toolsProducts.length}`
   );
   console.log(`Admin: ${adminEmail} (password from ADMIN_PASSWORD)`);
   if (withDemoData) {

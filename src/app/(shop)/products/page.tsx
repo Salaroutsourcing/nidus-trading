@@ -4,6 +4,11 @@ import { ProductCard } from "@/components/products/product-card";
 import { ProductsFilters } from "@/components/products/products-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { prisma } from "@/lib/prisma";
+import {
+  workshopCategory,
+  workshopProducts,
+  workshopProductsMissingFrom,
+} from "@/lib/workshop-tools";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -48,7 +53,7 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
   if (availability === "inquire") where.stock = { lte: 0 };
   if (tag) where.tags = { contains: tag, mode: "insensitive" };
 
-  const [products, categories, brands, categoryMeta] = await Promise.all([
+  const [dbProducts, dbCategories, brands, dbCategoryMeta] = await Promise.all([
     prisma.product.findMany({
       where,
       include: { category: true },
@@ -70,12 +75,43 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
       : Promise.resolve(null),
   ]);
 
+  const extra = workshopProductsMissingFrom(dbProducts.map((product) => product.sku)).filter(
+    (product) => {
+      if (q) {
+        const hay = `${product.name} ${product.description} ${product.sku} ${product.tags}`.toLowerCase();
+        if (!hay.includes(q.toLowerCase())) return false;
+      }
+      if (category && product.category.slug !== category) return false;
+      if (brand && product.brand !== brand) return false;
+      if (availability === "in-stock" && product.stock <= 0) return false;
+      if (availability === "inquire" && product.stock > 0) return false;
+      if (tag && !product.tags.toLowerCase().includes(tag.toLowerCase())) return false;
+      return true;
+    }
+  );
+  const products =
+    sort === "name"
+      ? [...dbProducts, ...extra].sort((a, b) => a.name.localeCompare(b.name))
+      : [...extra, ...dbProducts];
+  const categories = dbCategories.some((item) => item.slug === "workshop-hand-tools")
+    ? dbCategories
+    : [...dbCategories, workshopCategory()];
+  const categoryMeta =
+    dbCategoryMeta ||
+    (category === "workshop-hand-tools" ? workshopCategory() : null);
+  const brandNames = Array.from(
+    new Set([
+      ...brands.map((item) => item.brand!).filter(Boolean),
+      ...workshopProducts().map((item) => item.brand),
+    ])
+  );
+
   return (
     <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
       <Suspense fallback={<Skeleton className="h-96" />}>
         <ProductsFilters
           categories={categories}
-          brands={brands.map((b) => b.brand!).filter(Boolean)}
+          brands={brandNames}
         />
       </Suspense>
       <div>
