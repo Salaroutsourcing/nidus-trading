@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { generateOrderNumber } from "@/lib/utils";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { notifyNewQuoteRequest } from "@/lib/notify";
+import { findWorkshopProduct } from "@/lib/workshop-tools";
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
@@ -63,19 +64,27 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   const data = parsed.data;
   const productIds = data.items.map((i) => i.productId);
-  const products = await prisma.product.findMany({
-    where: { id: { in: productIds }, active: true },
+  const dbIds = productIds.filter((id) => !id.startsWith("tool-"));
+  const products = dbIds.length
+    ? await prisma.product.findMany({
+        where: { id: { in: dbIds }, active: true },
+      })
+    : [];
+  const listed = productIds.map((id) => {
+    const stored = products.find((product) => product.id === id);
+    if (stored) return stored;
+    return findWorkshopProduct(id);
   });
 
-  if (products.length !== productIds.length) {
+  if (listed.some((product) => !product)) {
     return NextResponse.json({ error: "Invalid products in quote list" }, { status: 400 });
   }
 
   // Inquiry-first: store trackable quote request without public pricing / stock deduction
-  const lineItems = data.items.map((item) => {
-    const product = products.find((p) => p.id === item.productId)!;
+  const lineItems = data.items.map((item, index) => {
+    const product = listed[index]!;
     return {
-      productId: product.id,
+      productId: product.id.startsWith("tool-") ? null : product.id,
       name: product.name,
       sku: product.sku,
       price: 0,

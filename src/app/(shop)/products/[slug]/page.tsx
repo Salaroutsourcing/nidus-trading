@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ProductSchema } from "@/components/seo/product-schema";
 import { prisma } from "@/lib/prisma";
+import { findWorkshopProduct, workshopProducts } from "@/lib/workshop-tools";
 import { parseJsonArray, parseJsonObject } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -19,10 +20,11 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const product =
+    (await prisma.product.findUnique({
+      where: { slug },
+      include: { category: true },
+    })) || findWorkshopProduct(slug);
   if (!product) return { title: "Product" };
   const title = `${product.name} | ${product.category.name} | Nidus Trading`;
   const description =
@@ -46,10 +48,11 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const product =
+    (await prisma.product.findUnique({
+      where: { slug },
+      include: { category: true },
+    })) || findWorkshopProduct(slug);
   if (!product || !product.active) notFound();
 
   const images = parseJsonArray(product.images);
@@ -65,15 +68,19 @@ export default async function ProductDetailPage({ params }: Props) {
   const image = gallery[0];
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  const related = await prisma.product.findMany({
-    where: {
-      active: true,
-      categoryId: product.categoryId,
-      id: { not: product.id },
-    },
-    include: { category: true },
-    take: 6,
-  });
+  const related = product.id.startsWith("tool-")
+    ? workshopProducts()
+        .filter((item) => item.id !== product.id)
+        .slice(0, 6)
+    : await prisma.product.findMany({
+        where: {
+          active: true,
+          categoryId: product.categoryId,
+          id: { not: product.id },
+        },
+        include: { category: true },
+        take: 6,
+      });
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
