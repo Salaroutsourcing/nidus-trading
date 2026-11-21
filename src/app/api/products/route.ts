@@ -97,14 +97,27 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const parsed = productSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    const message = parsed.error.issues
+      .map((issue) => {
+        const path = issue.path.join(".");
+        return path ? `${path}: ${issue.message}` : issue.message;
+      })
+      .join("; ");
+    return NextResponse.json({ error: message || "Check the product fields." }, { status: 400 });
   }
 
   const data = parsed.data;
+  let slug = slugify(data.name) || slugify(data.sku);
+  const slugTaken = await prisma.product.findUnique({ where: { slug } });
+  if (slugTaken) {
+    slug = slugify(`${data.name}-${data.sku}`) || `${slug}-${data.sku.toLowerCase()}`;
+  }
+
+  try {
   const product = await prisma.product.create({
     data: {
       name: data.name,
-      slug: slugify(data.name),
+      slug,
       description: data.description,
       shortDesc: data.shortDesc,
       sku: data.sku,
@@ -129,4 +142,15 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json(product, { status: 201 });
+  } catch (err) {
+    const code =
+      typeof err === "object" && err && "code" in err ? String((err as { code: string }).code) : "";
+    if (code === "P2002") {
+      return NextResponse.json(
+        { error: "A product with this SKU or name already exists." },
+        { status: 409 }
+      );
+    }
+    throw err;
+  }
 }
