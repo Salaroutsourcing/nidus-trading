@@ -68,9 +68,10 @@ export default async function ProductDetailPage({ params }: Props) {
   const image = gallery[0];
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  const related = product.id.startsWith("tool-")
+  const related =
+    product.id.startsWith("tool-") || product.id.startsWith("item-")
     ? workshopProducts()
-        .filter((item) => item.id !== product.id)
+        .filter((item) => item.category.slug === product.category.slug && item.id !== product.id)
         .slice(0, 6)
     : await prisma.product.findMany({
         where: {
