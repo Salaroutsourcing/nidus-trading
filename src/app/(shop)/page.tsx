@@ -7,7 +7,7 @@ import { FaqSection } from "@/components/home/faq-section";
 import { Testimonials } from "@/components/home/testimonials";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
-import { workshopCategory } from "@/lib/workshop-tools";
+import { withListedCategories } from "@/lib/workshop-tools";
 
 export const dynamic = "force-dynamic";
 
@@ -65,9 +65,7 @@ export default async function HomePage() {
     }),
   ]);
 
-  const categoryList = categories.some((item) => item.slug === "workshop-hand-tools")
-    ? categories
-    : [...categories, workshopCategory()];
+  const categoryList = withListedCategories(categories);
 
   const relevantCategories = categories.filter((c) =>
     [

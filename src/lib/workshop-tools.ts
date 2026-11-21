@@ -1,4 +1,5 @@
-import { buildB2BDescription } from "../../prisma/catalog-b2b";
+import { buildB2BDescription, type B2BCategory, type B2BProduct } from "../../prisma/catalog-b2b";
+import { itemCategory, itemProducts } from "../../prisma/item-list";
 import { toolsCategory, toolsProducts } from "../../prisma/tools-list";
 
 const listedAt = new Date("2026-11-21T00:00:00.000Z");
@@ -34,7 +35,7 @@ export type WorkshopProduct = {
   mpn: string;
   hsCode?: string;
   countryOfOrigin?: string;
-  datasheetUrl: null;
+  datasheetUrl: string | null;
   certifications: string;
   warrantyPeriod?: string;
   categoryId: string;
@@ -43,23 +44,39 @@ export type WorkshopProduct = {
   updatedAt: Date;
 };
 
-export function workshopCategory(): WorkshopCategory {
+function toCategory(source: B2BCategory, id: string): WorkshopCategory {
   return {
-    id: "cat-workshop-hand-tools",
-    name: toolsCategory.name,
-    slug: toolsCategory.slug,
-    description: toolsCategory.description,
-    image: toolsCategory.image,
-    icon: toolsCategory.icon,
-    featured: toolsCategory.featured,
-    sortOrder: toolsCategory.sortOrder,
+    id,
+    name: source.name,
+    slug: source.slug,
+    description: source.description,
+    image: source.image,
+    icon: source.icon,
+    featured: source.featured,
+    sortOrder: source.sortOrder,
   };
 }
 
-export function workshopProducts(): WorkshopProduct[] {
-  const category = workshopCategory();
-  return toolsProducts.map((product) => ({
-    id: `tool-${product.sku}`,
+export function workshopCategory(): WorkshopCategory {
+  return toCategory(toolsCategory, "cat-workshop-hand-tools");
+}
+
+export function itemListCategory(): WorkshopCategory {
+  return toCategory(itemCategory, "cat-fasteners-fittings-components");
+}
+
+export function listedCategories(): WorkshopCategory[] {
+  return [workshopCategory(), itemListCategory()];
+}
+
+export function withListedCategories<T extends { slug: string }>(stored: T[]) {
+  const slugs = new Set(stored.map((item) => item.slug));
+  return [...stored, ...listedCategories().filter((item) => !slugs.has(item.slug))];
+}
+
+function toProducts(source: B2BProduct[], category: WorkshopCategory, idPrefix: string): WorkshopProduct[] {
+  return source.map((product) => ({
+    id: `${idPrefix}-${product.sku}`,
     name: product.title,
     slug: product.slug,
     description: buildB2BDescription(product),
@@ -80,7 +97,7 @@ export function workshopProducts(): WorkshopProduct[] {
     mpn: product.mpn,
     hsCode: product.hsCode,
     countryOfOrigin: product.countryOfOrigin,
-    datasheetUrl: null,
+    datasheetUrl: product.datasheetUrl ?? null,
     certifications: "[]",
     warrantyPeriod: product.warrantyPeriod,
     categoryId: category.id,
@@ -88,6 +105,13 @@ export function workshopProducts(): WorkshopProduct[] {
     createdAt: listedAt,
     updatedAt: listedAt,
   }));
+}
+
+export function workshopProducts(): WorkshopProduct[] {
+  return [
+    ...toProducts(toolsProducts, workshopCategory(), "tool"),
+    ...toProducts(itemProducts, itemListCategory(), "item"),
+  ];
 }
 
 export function findWorkshopProduct(idOrSlug: string) {

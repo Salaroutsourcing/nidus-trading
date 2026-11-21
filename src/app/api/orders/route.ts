@@ -64,7 +64,8 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   const data = parsed.data;
   const productIds = data.items.map((i) => i.productId);
-  const dbIds = productIds.filter((id) => !id.startsWith("tool-"));
+  const listedId = (id: string) => id.startsWith("tool-") || id.startsWith("item-");
+  const dbIds = productIds.filter((id) => !listedId(id));
   const products = dbIds.length
     ? await prisma.product.findMany({
         where: { id: { in: dbIds }, active: true },
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
   const lineItems = data.items.map((item, index) => {
     const product = listed[index]!;
     return {
-      productId: product.id.startsWith("tool-") ? null : product.id,
+      productId: product.id.startsWith("tool-") || product.id.startsWith("item-") ? null : product.id,
       name: product.name,
       sku: product.sku,
       price: 0,

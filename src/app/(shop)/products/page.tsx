@@ -5,7 +5,7 @@ import { ProductsFilters } from "@/components/products/products-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { prisma } from "@/lib/prisma";
 import {
-  workshopCategory,
+  listedCategories,
   workshopProducts,
   workshopProductsMissingFrom,
 } from "@/lib/workshop-tools";
@@ -93,12 +93,13 @@ async function ProductResults({ searchParams }: { searchParams: SearchParams }) 
     sort === "name"
       ? [...dbProducts, ...extra].sort((a, b) => a.name.localeCompare(b.name))
       : [...extra, ...dbProducts];
-  const categories = dbCategories.some((item) => item.slug === "workshop-hand-tools")
-    ? dbCategories
-    : [...dbCategories, workshopCategory()];
+  const knownSlugs = new Set(dbCategories.map((item) => item.slug));
+  const categories = [
+    ...dbCategories,
+    ...listedCategories().filter((item) => !knownSlugs.has(item.slug)),
+  ];
   const categoryMeta =
-    dbCategoryMeta ||
-    (category === "workshop-hand-tools" ? workshopCategory() : null);
+    dbCategoryMeta || listedCategories().find((item) => item.slug === category) || null;
   const brandNames = Array.from(
     new Set([
       ...brands.map((item) => item.brand!).filter(Boolean),
